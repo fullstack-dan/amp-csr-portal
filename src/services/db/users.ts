@@ -1,0 +1,48 @@
+import { User } from "../models/User";
+
+export const customers: User[] = [
+    {
+        id: "cust-1001",
+        firstName: "Alice",
+        lastName: "Johnson",
+        email: "alice.johnson@example.com",
+        phone: "1234567890",
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        password: "securepassword123",
+        role: "customer",
+    },
+    {
+        id: "cust-1002",
+        firstName: "Bob",
+        lastName: "Smith",
+        email: "bob.smith@example.com",
+        phone: "5555555555",
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        password: "pretendthisishashed",
+        role: "customer",
+    },
+    {
+        id: "cust-1003",
+        firstName: "Carol",
+        lastName: "Lee",
+        email: "carol.lee@example.com",
+        phone: "7777777777",
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        password: "defnotsecure123",
+        role: "customer",
+    },
+    {
+        id: "cust-1004",
+        firstName: "David",
+        lastName: "Kim",
+        email: "david.kim@example.com",
+        phone: "0010010011",
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        password: "alwaysusesaltkids",
+        role: "customer",
+    },
+];
