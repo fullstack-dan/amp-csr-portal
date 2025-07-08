@@ -5,8 +5,14 @@ import { CSRRequestStatus, CSRRequestType } from "../models/CSRRequest";
 export default function DashboardHome() {
     const [pendingRequests, setPendingRequests] = useState([]);
     const [users, setUsers] = useState([]);
+    const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [usersLoading, setUsersLoading] = useState(true);
+    const [searchQuery, setSearchQuery] = useState("");
 
     useEffect(() => {
+        setLoading(true);
+        setUsersLoading(true);
         fetchData();
     }, []);
 
@@ -32,6 +38,24 @@ export default function DashboardHome() {
             setUsers(users);
         } catch (error) {
             console.error("Failed to fetch initial data:", error);
+        } finally {
+            setLoading(false);
+            setUsersLoading(false);
+        }
+    };
+
+    const handleSearch = async () => {
+        if (!searchQuery.trim()) {
+            setUsers(await API.getAllCustomers());
+            return;
+        }
+
+        if (searchQuery.includes("@")) {
+            const foundUsers = await API.getCustomerByEmail(searchQuery);
+            setUsers([foundUsers].filter(Boolean));
+        } else {
+            const foundUsers = await API.getCustomersByName(searchQuery);
+            setUsers(foundUsers);
         }
     };
 
@@ -72,15 +96,47 @@ export default function DashboardHome() {
                 </div>
 
                 {/* Users Section */}
-                <div className="flex-1 flex flex-col ">
+                <div className="flex-1 flex flex-col">
                     <h3 className="font-bold text-xl m-4">Users</h3>
+                    <div className="p-4 flex w-full gap-4">
+                        <label className="input flex-1">
+                            <svg
+                                className="h-[1em] opacity-50"
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 24 24"
+                            >
+                                <g
+                                    strokeLinejoin="round"
+                                    strokeLinecap="round"
+                                    strokeWidth="2.5"
+                                    fill="none"
+                                    stroke="currentColor"
+                                >
+                                    <circle cx="11" cy="11" r="8"></circle>
+                                    <path d="m21 21-4.3-4.3"></path>
+                                </g>
+                            </svg>
+                            <input
+                                type="search"
+                                className="grow"
+                                placeholder="Search users by name or email"
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                            />
+                        </label>
+                        <button className="btn btn-md" onClick={handleSearch}>
+                            Search
+                        </button>
+                    </div>
                     <ul className="mt-2">
                         {users.map((user) => (
                             <li
                                 key={user.id}
                                 className="border-b border-gray-200 p-4"
                             >
-                                <h4 className="font-semibold">{user.name}</h4>
+                                <h4 className="font-semibold">
+                                    {user.firstName + " " + user.lastName}
+                                </h4>
                                 <p className="text-sm ">{user.email}</p>
                             </li>
                         ))}

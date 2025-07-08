@@ -76,6 +76,16 @@ export const mockApi = {
         return customers.filter((customer) => customer.phone === phone);
     },
 
+    async getCustomersByName(name: string): Promise<User[]> {
+        await simulateDelay();
+        const lowerName = name.toLowerCase();
+        return customers.filter(
+            (customer) =>
+                customer.firstName.toLowerCase().includes(lowerName) ||
+                customer.lastName.toLowerCase().includes(lowerName)
+        );
+    },
+
     // Dashboard Statistics
     async getDashboardStats() {
         await simulateDelay();
