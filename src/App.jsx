@@ -6,6 +6,7 @@ import {
     DashboardRequests,
     DashboardUsers,
     UserDetails,
+    RequestDetails,
 } from "./pages";
 import { Route, Routes, Link } from "react-router";
 import "./App.css";
@@ -39,6 +40,10 @@ function App() {
                             <Route
                                 path="/requests"
                                 element={<DashboardRequests />}
+                            />
+                            <Route
+                                path="/requests/:requestId"
+                                element={<RequestDetails />}
                             />
                         </Routes>
                     </div>
