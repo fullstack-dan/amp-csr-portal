@@ -4,7 +4,7 @@ import CSRRequest, { CSRRequestStatus } from "../models/CSRRequest";
 import { User } from "../models/User";
 
 // Simulate async API calls with a small delay
-const simulateDelay = (ms: number = Math.random() * 1000) =>
+const simulateDelay = (ms: number = Math.random() * 2000) =>
     new Promise((resolve) => setTimeout(resolve, ms));
 
 /**

@@ -88,7 +88,7 @@ export default function RequestsList({
                     requests.map((request) => (
                         <li
                             key={request.id}
-                            className="flex justify-between items-start border-b border-gray-200 p-4 last:border-b-0 hover:bg-base-300"
+                            className="flex justify-between items-start border-b border-gray-200 p-4 last:border-b-0 hover:bg-base-300 transition duration-200 ease-in-out"
                         >
                             <div className="flex-1">
                                 <div className="flex items-center gap-2 mb-1">
@@ -120,7 +120,7 @@ export default function RequestsList({
                                 to={`/requests/${request.id}`}
                                 className="ml-4"
                             >
-                                <button className="btn btn-sm">View</button>
+                                <button className="btn">View</button>
                             </Link>
                         </li>
                     ))

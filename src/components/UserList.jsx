@@ -63,7 +63,7 @@ export default function UserList({
                     users.map((user) => (
                         <li
                             key={user.id}
-                            className="flex items-center justify-between border-b border-gray-200 p-4 hover:bg-base-300 last:border-b-0 hover:cursor-pointer"
+                            className="flex items-center justify-between border-b border-gray-200 p-4 hover:bg-base-300 last:border-b-0 hover:cursor-pointer transition duration-200 ease-in-out"
                         >
                             <div>
                                 <h4 className="font-semibold">

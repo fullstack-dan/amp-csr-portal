@@ -91,7 +91,7 @@ export default function DashboardRequests() {
     return (
         <div className="flex flex-col h-full overflow-hidden">
             {/* Filter bar */}
-            <div className="border-b border-gray-200 p-4 flex gap-2 items-center flex-shrink-0">
+            <div className="border-b border-gray-200 p-4 flex flex-col md:flex-row gap-2 md:items-center">
                 <span className="font-medium">Filter by status:</span>
                 <div className="flex gap-2">
                     <button
@@ -99,6 +99,7 @@ export default function DashboardRequests() {
                             statusFilter === "all" ? "btn-primary" : "btn-ghost"
                         }`}
                         onClick={() => setStatusFilter("all")}
+                        disabled={loading}
                     >
                         All
                     </button>
@@ -111,6 +112,7 @@ export default function DashboardRequests() {
                         onClick={() =>
                             setStatusFilter(CSRRequestStatus.PENDING)
                         }
+                        disabled={loading}
                     >
                         Pending
                     </button>
@@ -123,6 +125,7 @@ export default function DashboardRequests() {
                         onClick={() =>
                             setStatusFilter(CSRRequestStatus.APPROVED)
                         }
+                        disabled={loading}
                     >
                         Approved
                     </button>
@@ -135,6 +138,7 @@ export default function DashboardRequests() {
                         onClick={() =>
                             setStatusFilter(CSRRequestStatus.REJECTED)
                         }
+                        disabled={loading}
                     >
                         Rejected
                     </button>
@@ -147,11 +151,12 @@ export default function DashboardRequests() {
                         onClick={() =>
                             setStatusFilter(CSRRequestStatus.COMPLETED)
                         }
+                        disabled={loading}
                     >
                         Completed
                     </button>
                 </div>
-                <div className="ml-auto text-sm text-gray-600">
+                <div className=" md:ml-auto text-sm text-gray-600">
                     {!loading &&
                         `${requests.length} request${
                             requests.length !== 1 ? "s" : ""
