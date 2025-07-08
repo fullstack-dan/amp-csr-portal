@@ -2,12 +2,12 @@
  * type of CSR request
  */
 export enum CSRRequestType {
-    ADDRESS_CHANGE = "address_change",
-    ACCOUNT_ACCESS = "account_access",
-    SUBSCRIPTION_MANAGEMENT = "subscription_management",
-    BILLING_ISSUE = "billing_issue",
-    SERVICE_CANCELLATION = "service_cancellation",
-    OTHER = "other",
+    ADDRESS_CHANGE = "Address Change",
+    ACCOUNT_ACCESS = "Account Access",
+    SUBSCRIPTION_MANAGEMENT = "Subscription Management",
+    BILLING_ISSUE = "Billing Issue",
+    SERVICE_CANCELLATION = "Service Cancellation",
+    OTHER = "Other",
 }
 
 /**
