@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { mockApi as API } from "../api/mockAPI";
 import { CSRRequestStatus, CSRRequestType } from "../models/CSRRequest";
 import UserList from "../components/UserList";
+import RequestsList from "../components/RequestsList";
 
 export default function DashboardHome() {
     const [pendingRequests, setPendingRequests] = useState([]);
@@ -64,45 +65,13 @@ export default function DashboardHome() {
         <div className="flex flex-col h-full overflow-hidden">
             <div className="flex-1 flex flex-col md:flex-row overflow-hidden">
                 {/* Requests section */}
-                <div className="flex-1 flex flex-col border-b md:border-b-0 md:border-r border-gray-200 overflow-hidden">
-                    <h3 className="font-bold text-xl m-4 flex-shrink-0">
-                        Pending Requests
-                    </h3>
-                    <ul className="flex-1 overflow-y-auto px-4 pb-4">
-                        {reqsLoading ? (
-                            <li className="py-4 ">Loading requests...</li>
-                        ) : pendingRequests.length > 0 ? (
-                            pendingRequests.map((request) => (
-                                <li
-                                    key={request.id}
-                                    className="border-b border-gray-200 py-4 last:border-b-0"
-                                >
-                                    <h4 className="font-semibold">
-                                        {request.requestType
-                                            .replace(/_/g, " ")
-                                            .replace(/\b\w/g, (l) =>
-                                                l.toUpperCase()
-                                            )}
-                                    </h4>
-                                    <p className="text-sm ">
-                                        {request.customerEmail}
-                                    </p>
-                                    <p className="text-sm  mt-1">
-                                        "{request.details}"
-                                    </p>
-                                    <p className="text-sm  mt-2 italic">
-                                        Last Updated:{" "}
-                                        {new Date(
-                                            request.updatedAt
-                                        ).toLocaleString()}
-                                    </p>
-                                </li>
-                            ))
-                        ) : (
-                            <li className="py-4 ">No pending requests.</li>
-                        )}
-                    </ul>
-                </div>
+                <RequestsList
+                    requests={pendingRequests}
+                    loading={reqsLoading}
+                    title="Pending Requests"
+                    className="flex-1 border-b md:border-b-0 md:border-r border-gray-200"
+                    onSearch={null} // No search in dashboard view
+                />
 
                 {/* Users section */}
                 <UserList

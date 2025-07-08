@@ -54,14 +54,16 @@ export default function UserList({
                 </button>
             </div>
 
-            <ul className="flex-1 overflow-y-auto px-4 pb-4">
+            <ul className="flex-1 overflow-y-auto pb-4">
                 {loading ? (
-                    <li className="py-4 ">Loading users...</li>
+                    <div className="flex items-center justify-center h-full">
+                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500" />
+                    </div>
                 ) : users.length !== 0 ? (
                     users.map((user) => (
                         <li
                             key={user.id}
-                            className="flex justify-between border-b border-gray-200 py-4 hover:bg-base-300 last:border-b-0 hover:cursor-pointer"
+                            className="flex items-center justify-between border-b border-gray-200 p-4 hover:bg-base-300 last:border-b-0 hover:cursor-pointer"
                         >
                             <div>
                                 <h4 className="font-semibold">
@@ -74,11 +76,9 @@ export default function UserList({
                                         user.address.state}
                                 </p>
                             </div>
-                            <div className="flex items-center gap-2">
-                                <Link to={`/users/${user.id}`}>
-                                    <button className="btn">View</button>
-                                </Link>
-                            </div>
+                            <Link to={`/users/${user.id}`}>
+                                <button className="btn">View</button>
+                            </Link>
                         </li>
                     ))
                 ) : (

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { FocusProvider } from "./contexts/FocusContext";
 import Navbar from "./components/Navbar";
-import { DashboardHome, DashboardUsers } from "./pages";
+import { DashboardHome, DashboardRequests, DashboardUsers } from "./pages";
 import { Route, Routes } from "react-router";
 import "./App.css";
 import UserDetails from "./pages/UserDetails";
@@ -24,6 +24,10 @@ function App() {
                             <Route
                                 path="/users/:id"
                                 element={<UserDetails />}
+                            />
+                            <Route
+                                path="/requests"
+                                element={<DashboardRequests />}
                             />
                         </Routes>
                     </div>
