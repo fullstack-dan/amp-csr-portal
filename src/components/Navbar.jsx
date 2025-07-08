@@ -15,7 +15,7 @@ function NavLink({ href, icon: Icon, children }) {
 
 export default function Navbar() {
     return (
-        <nav className="flex flex-col max-w-[10%] w-full border-r border-gray-200">
+        <nav className="flex justify-center md:justify-start md:flex-col md:max-w-[10%] w-full border-r border-gray-200">
             <NavLink href="/" icon={House}>
                 Home
             </NavLink>

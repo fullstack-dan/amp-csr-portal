@@ -33,19 +33,19 @@ export const exampleCsrRequests: CSRRequest[] = [
             {
                 timestamp: new Date("2025-06-02T09:30:00Z").toISOString(),
                 status: CSRRequestStatus.APPROVED,
-                updatedBy: "csr-002",
+                updatedBy: "csr-001",
                 comment: "Access granted after verification",
             },
             {
                 timestamp: new Date("2025-06-02T10:00:00Z").toISOString(),
                 status: CSRRequestStatus.PENDING,
-                updatedBy: "csr-002",
+                updatedBy: "csr-001",
                 comment: "Customer verified identity via security questions",
             },
             {
                 timestamp: new Date("2025-06-02T09:30:00Z").toISOString(),
                 status: CSRRequestStatus.PENDING,
-                updatedBy: "csr-002",
+                updatedBy: "csr-001",
                 comment: "Initial request received",
             },
         ],
@@ -62,21 +62,21 @@ export const exampleCsrRequests: CSRRequest[] = [
             {
                 timestamp: new Date("2025-06-03T16:00:00Z").toISOString(),
                 status: CSRRequestStatus.REJECTED,
-                updatedBy: "csr-003",
+                updatedBy: "csr-001",
                 comment:
                     "Subscription change rejected due to plan restrictions",
             },
             {
                 timestamp: new Date("2025-06-03T14:30:00Z").toISOString(),
                 status: CSRRequestStatus.PENDING,
-                updatedBy: "csr-003",
+                updatedBy: "csr-001",
                 comment:
                     "Explained to customer that primary location does not support Basic plan",
             },
             {
                 timestamp: new Date("2025-06-03T14:15:00Z").toISOString(),
                 status: CSRRequestStatus.PENDING,
-                updatedBy: "csr-003",
+                updatedBy: "csr-001",
                 comment: "Initial request received",
             },
         ],
@@ -93,7 +93,7 @@ export const exampleCsrRequests: CSRRequest[] = [
             {
                 timestamp: new Date("2025-06-04T08:45:00Z").toISOString(),
                 status: CSRRequestStatus.PENDING,
-                updatedBy: "csr-004",
+                updatedBy: "csr-001",
                 comment: "Billing issue reported by customer",
             },
         ],
@@ -110,20 +110,20 @@ export const exampleCsrRequests: CSRRequest[] = [
             {
                 timestamp: new Date("2025-06-05T12:00:00Z").toISOString(),
                 status: CSRRequestStatus.COMPLETED,
-                updatedBy: "csr-005",
+                updatedBy: "csr-001",
                 comment: "Service cancellation processed successfully",
             },
             {
                 timestamp: new Date("2025-06-05T12:30:00Z").toISOString(),
                 status: CSRRequestStatus.PENDING,
-                updatedBy: "csr-005",
+                updatedBy: "csr-001",
                 comment:
                     "Customer confirmed relocation and requested cancellation",
             },
             {
                 timestamp: new Date("2025-06-05T12:00:00Z").toISOString(),
                 status: CSRRequestStatus.PENDING,
-                updatedBy: "csr-005",
+                updatedBy: "csr-001",
                 comment: "Initial request received",
             },
         ],
@@ -140,7 +140,7 @@ export const exampleCsrRequests: CSRRequest[] = [
             {
                 timestamp: new Date("2025-06-06T15:00:00Z").toISOString(),
                 status: CSRRequestStatus.PENDING,
-                updatedBy: "csr-006",
+                updatedBy: "csr-001",
                 comment: "Initial request received",
             },
         ],

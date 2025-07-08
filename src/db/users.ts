@@ -1,6 +1,6 @@
-import { User } from "../models/User";
+import { User, Customer } from "../models/User";
 
-export const customers: User[] = [
+export const customers: Customer[] = [
     {
         id: "cust-1001",
         firstName: "Alice",
@@ -11,6 +11,14 @@ export const customers: User[] = [
         updatedAt: new Date().toISOString(),
         password: "securepassword123",
         role: "customer",
+        address: {
+            street: "123 Elm St",
+            city: "Springfield",
+            state: "IL",
+            zipCode: "62701",
+        },
+        vehicleSubscriptions: [],
+        CSRRequests: [],
     },
     {
         id: "cust-1002",
@@ -22,6 +30,14 @@ export const customers: User[] = [
         updatedAt: new Date().toISOString(),
         password: "pretendthisishashed",
         role: "customer",
+        address: {
+            street: "456 Oak St",
+            city: "Metropolis",
+            state: "NY",
+            zipCode: "10001",
+        },
+        vehicleSubscriptions: [],
+        CSRRequests: [],
     },
     {
         id: "cust-1003",
@@ -33,6 +49,14 @@ export const customers: User[] = [
         updatedAt: new Date().toISOString(),
         password: "defnotsecure123",
         role: "customer",
+        address: {
+            street: "789 Pine St",
+            city: "Gotham",
+            state: "NJ",
+            zipCode: "07001",
+        },
+        vehicleSubscriptions: [],
+        CSRRequests: [],
     },
     {
         id: "cust-1004",
@@ -44,5 +68,65 @@ export const customers: User[] = [
         updatedAt: new Date().toISOString(),
         password: "alwaysusesaltkids",
         role: "customer",
+        address: {
+            street: "321 Maple St",
+            city: "Star City",
+            state: "CA",
+            zipCode: "90210",
+        },
+        vehicleSubscriptions: [],
+        CSRRequests: [],
+    },
+    {
+        id: "cust-1005",
+        firstName: "Eve",
+        lastName: "Brown",
+        email: "eve.brown@example.com",
+        phone: "8888888888",
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        password: "hashedpassword789",
+        role: "customer",
+        address: {
+            street: "654 Cedar St",
+            city: "Central City",
+            state: "IL",
+            zipCode: "62702",
+        },
+        vehicleSubscriptions: [],
+        CSRRequests: [],
+    },
+    {
+        id: "cust-1006",
+        firstName: "Frank",
+        lastName: "White",
+        email: "frank.white@example.com",
+        phone: "9998887777",
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        password: "hashedpassword012",
+        role: "customer",
+        address: {
+            street: "987 Birch St",
+            city: "Coast City",
+            state: "CA",
+            zipCode: "90211",
+        },
+        vehicleSubscriptions: [],
+        CSRRequests: [],
+    },
+];
+
+export const admins: User[] = [
+    {
+        id: "csr-001",
+        firstName: "Daniel",
+        lastName: "Aoulou",
+        email: "aouloudan@icloud.com",
+        phone: "2223334444",
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        password: "hashedpassword456",
+        role: "admin",
     },
 ];
