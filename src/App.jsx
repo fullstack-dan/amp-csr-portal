@@ -1,5 +1,5 @@
-// App.jsx
 import { useState } from "react";
+import { FocusProvider } from "./contexts/FocusContext";
 import Navbar from "./components/Navbar";
 import { DashboardHome, DashboardUsers } from "./pages";
 import { Route, Routes } from "react-router";
@@ -13,16 +13,17 @@ function App() {
                 <h2 className="text-xl">Hello, User!</h2>
             </div>
 
-            <div className="flex flex-1 flex-col-reverse md:flex-row overflow-hidden">
-                <Navbar />
-                {/* Routes container - Makes sure content can scroll */}
-                <div className="flex-1 overflow-hidden">
-                    <Routes>
-                        <Route path="/" element={<DashboardHome />} />
-                        <Route path="/users" element={<DashboardUsers />} />
-                    </Routes>
+            <FocusProvider>
+                <div className="flex flex-1 flex-col-reverse md:flex-row overflow-hidden">
+                    <Navbar />
+                    <div className="flex-1 overflow-hidden">
+                        <Routes>
+                            <Route path="/" element={<DashboardHome />} />
+                            <Route path="/users" element={<DashboardUsers />} />
+                        </Routes>
+                    </div>
                 </div>
-            </div>
+            </FocusProvider>
         </main>
     );
 }
