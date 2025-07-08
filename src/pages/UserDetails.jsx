@@ -96,6 +96,8 @@ export default function UserDetails() {
     const [editing, setEditing] = useState(false);
     const [formData, setFormData] = useState({});
     const [hasChanges, setHasChanges] = useState(false);
+    const [info, setInfo] = useState("");
+    const [infoColor, setInfoColor] = useState("bg-blue-500");
 
     useEffect(() => {
         if (!id) {
@@ -143,6 +145,16 @@ export default function UserDetails() {
         try {
             console.log("Saving changes:", formData);
 
+            if (!validateFormData()) {
+                setInfo("Please fill in all fields correctly.");
+                setInfoColor("bg-red-500");
+                setTimeout(() => {
+                    setInfo("Editing customer information");
+                    setInfoColor("bg-blue-500");
+                }, 3000);
+                return;
+            }
+
             setCustomer({
                 ...customer,
                 ...formData,
@@ -159,6 +171,37 @@ export default function UserDetails() {
         } catch (error) {
             console.error("Failed to save changes:", error);
         }
+    };
+
+    const validateFormData = () => {
+        const {
+            firstName,
+            lastName,
+            email,
+            phone,
+            street,
+            city,
+            state,
+            zipCode,
+        } = formData;
+        return (
+            firstName.trim() &&
+            lastName.trim() &&
+            email.trim() &&
+            phone.trim() &&
+            street.trim() &&
+            city.trim() &&
+            state.trim() &&
+            zipCode.trim() &&
+            /^[a-zA-Z\s]+$/.test(firstName) &&
+            /^[a-zA-Z\s]+$/.test(lastName) &&
+            /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) &&
+            /^\d{10}$/.test(phone.replace(/\D/g, "")) &&
+            /^[a-zA-Z0-9\s,.'-]{3,}$/.test(street) &&
+            /^[a-zA-Z\s]+$/.test(city) &&
+            /^[A-Z]{2}$/.test(state) &&
+            /^\d{5}(-\d{4})?$/.test(zipCode)
+        );
     };
 
     const handleCancel = () => {
@@ -202,9 +245,11 @@ export default function UserDetails() {
     return (
         <div className="flex flex-col h-full overflow-hidden">
             {editing && (
-                <div className="bg-blue-500 text-white text-center py-2 flex items-center justify-center gap-2">
+                <div
+                    className={` ${infoColor} text-white text-center py-2 flex items-center justify-center gap-2`}
+                >
                     <Edit2 className="w-4 h-4" />
-                    Editing customer information
+                    <span>{info}</span>
                 </div>
             )}
 
@@ -372,7 +417,11 @@ export default function UserDetails() {
                             <>
                                 <button
                                     className="btn btn-primary flex items-center gap-2"
-                                    onClick={() => setEditing(true)}
+                                    onClick={() => {
+                                        setInfo("Editing customer information");
+                                        setInfoColor("bg-blue-500");
+                                        setEditing(true);
+                                    }}
                                 >
                                     <Edit2 className="w-4 h-4" />
                                     Edit Details
