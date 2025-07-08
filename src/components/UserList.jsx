@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router";
 
 export default function UserList({
     users,
@@ -60,17 +61,29 @@ export default function UserList({
                     users.map((user) => (
                         <li
                             key={user.id}
-                            className="border-b border-gray-200 py-4 hover:bg-gray-50 last:border-b-0 hover:cursor-pointer"
+                            className="flex justify-between border-b border-gray-200 py-4 hover:bg-gray-50 last:border-b-0 hover:cursor-pointer"
                         >
-                            <h4 className="font-semibold">
-                                {user.firstName + " " + user.lastName}
-                            </h4>
-                            <p className="text-sm text-gray-600">
-                                {user.email}
-                            </p>
-                            <p className="text-sm text-gray-600">
-                                {user.address.city + ", " + user.address.state}
-                            </p>
+                            <div>
+                                <h4 className="font-semibold">
+                                    {user.firstName + " " + user.lastName}
+                                </h4>
+                                <p className="text-sm text-gray-600">
+                                    {user.email}
+                                </p>
+                                <p className="text-sm text-gray-600">
+                                    {user.address.city +
+                                        ", " +
+                                        user.address.state}
+                                </p>
+                            </div>
+                            <div className="flex items-center gap-2">
+                                <Link to={`/users/${user.id}`}>
+                                    <button className="btn">View</button>
+                                </Link>
+                                <Link to={`/users/${user.id}`}>
+                                    <button className="btn">Edit</button>
+                                </Link>
+                            </div>
                         </li>
                     ))
                 ) : (

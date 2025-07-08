@@ -17,6 +17,7 @@ export interface User {
     lastName: string;
     email: string;
     phone: string;
+    profilePicture?: string; // Optional profile picture URL
     createdAt: string;
     updatedAt: string;
     role: "admin" | "customer";

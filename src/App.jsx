@@ -4,6 +4,7 @@ import Navbar from "./components/Navbar";
 import { DashboardHome, DashboardUsers } from "./pages";
 import { Route, Routes } from "react-router";
 import "./App.css";
+import UserDetails from "./pages/UserDetails";
 
 function App() {
     return (
@@ -20,6 +21,10 @@ function App() {
                         <Routes>
                             <Route path="/" element={<DashboardHome />} />
                             <Route path="/users" element={<DashboardUsers />} />
+                            <Route
+                                path="/users/:id"
+                                element={<UserDetails />}
+                            />
                         </Routes>
                     </div>
                 </div>
