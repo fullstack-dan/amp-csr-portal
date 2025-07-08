@@ -143,8 +143,6 @@ export default function UserDetails() {
 
     const handleSave = async () => {
         try {
-            console.log("Saving changes:", formData);
-
             if (!validateFormData()) {
                 setInfo("Please fill in all fields correctly.");
                 setInfoColor("bg-red-500");

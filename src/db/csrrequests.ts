@@ -87,14 +87,42 @@ export const exampleCsrRequests: CSRRequest[] = [
         requestType: CSRRequestType.BILLING_ISSUE,
         status: CSRRequestStatus.PENDING,
         createdAt: new Date("2025-06-04T08:45:00Z").toISOString(),
-        updatedAt: new Date("2025-06-04T08:45:00Z").toISOString(),
-        details: "I was charged twice for my last bill",
+        updatedAt: new Date("2025-06-04T13:45:00Z").toISOString(),
+        details:
+            "I was charged twice for my last bill, GET THOSE SNEAKY BEETLES OUT OF MY WALLET!",
         history: [
+            {
+                timestamp: new Date("2025-06-04T13:45:00Z").toISOString(),
+                status: CSRRequestStatus.PENDING,
+                updatedBy: "csr-001",
+                comment: "Escalated to billing department for investigation",
+            },
+            {
+                timestamp: new Date("2025-06-04T13:30:00Z").toISOString(),
+                status: CSRRequestStatus.PENDING,
+                updatedBy: "csr-001",
+                comment:
+                    "Customer confirmed double charge, awaiting billing response",
+            },
+            {
+                timestamp: new Date("2025-06-04T09:45:00Z").toISOString(),
+                status: CSRRequestStatus.PENDING,
+                updatedBy: "csr-001",
+                comment:
+                    "Customer called, proceeded to go on for 45 minutes about genetically modified bugs overthrowing the government and stealing our money. Hung up abruptly, sending an email to follow up.",
+            },
+            {
+                timestamp: new Date("2025-06-04T09:00:00Z").toISOString(),
+                status: CSRRequestStatus.PENDING,
+                updatedBy: "csr-001",
+                comment:
+                    "Reached out to customer, awaiting confirmation of double charge",
+            },
             {
                 timestamp: new Date("2025-06-04T08:45:00Z").toISOString(),
                 status: CSRRequestStatus.PENDING,
                 updatedBy: "csr-001",
-                comment: "Billing issue reported by customer",
+                comment: "Initial request received",
             },
         ],
     },
