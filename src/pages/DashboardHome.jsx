@@ -6,12 +6,12 @@ export default function DashboardHome() {
     const [pendingRequests, setPendingRequests] = useState([]);
     const [users, setUsers] = useState([]);
     const [error, setError] = useState(null);
-    const [loading, setLoading] = useState(true);
+    const [reqsLoading, setReqsLoading] = useState(true);
     const [usersLoading, setUsersLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState("");
 
     useEffect(() => {
-        setLoading(true);
+        setReqsLoading(true);
         setUsersLoading(true);
         fetchData();
     }, []);
@@ -39,14 +39,16 @@ export default function DashboardHome() {
         } catch (error) {
             console.error("Failed to fetch initial data:", error);
         } finally {
-            setLoading(false);
+            setReqsLoading(false);
             setUsersLoading(false);
         }
     };
 
     const handleSearch = async () => {
+        setUsersLoading(true);
         if (!searchQuery.trim()) {
             setUsers(await API.getAllCustomers());
+            setUsersLoading(false);
             return;
         }
 
@@ -57,6 +59,7 @@ export default function DashboardHome() {
             const foundUsers = await API.getCustomersByName(searchQuery);
             setUsers(foundUsers);
         }
+        setUsersLoading(false);
     };
 
     return (
@@ -71,27 +74,35 @@ export default function DashboardHome() {
                 <div className="flex flex-col flex-1 border-r border-gray-200">
                     <h3 className="font-bold text-xl m-4">Pending Requests</h3>
                     <ul className="mt-2">
-                        {pendingRequests.map((request) => (
-                            <li
-                                key={request.id}
-                                className="border-b border-gray-200 p-4"
-                            >
-                                <h4 className="font-semibold">
-                                    {request.requestType}
-                                </h4>
-                                <p className="text-sm">
-                                    {request.customerEmail}
-                                </p>
-
-                                <p className="text-sm ">"{request.details}"</p>
-                                <p className="text-sm mt-4 italic">
-                                    Last Updated:{" "}
-                                    {new Date(
-                                        request.updatedAt
-                                    ).toLocaleString()}
-                                </p>
+                        {reqsLoading ? (
+                            <li className="p-4 text-gray-500">
+                                Loading requests...
                             </li>
-                        ))}
+                        ) : (
+                            pendingRequests.map((request) => (
+                                <li
+                                    key={request.id}
+                                    className="border-b border-gray-200 p-4"
+                                >
+                                    <h4 className="font-semibold">
+                                        {request.requestType}
+                                    </h4>
+                                    <p className="text-sm">
+                                        {request.customerEmail}
+                                    </p>
+
+                                    <p className="text-sm ">
+                                        "{request.details}"
+                                    </p>
+                                    <p className="text-sm mt-4 italic">
+                                        Last Updated:{" "}
+                                        {new Date(
+                                            request.updatedAt
+                                        ).toLocaleString()}
+                                    </p>
+                                </li>
+                            ))
+                        )}
                     </ul>
                 </div>
 
@@ -129,17 +140,27 @@ export default function DashboardHome() {
                         </button>
                     </div>
                     <ul className="mt-2">
-                        {users.map((user) => (
-                            <li
-                                key={user.id}
-                                className="border-b border-gray-200 p-4"
-                            >
-                                <h4 className="font-semibold">
-                                    {user.firstName + " " + user.lastName}
-                                </h4>
-                                <p className="text-sm ">{user.email}</p>
+                        {usersLoading ? (
+                            <li className="p-4 text-gray-500">
+                                Loading users...
                             </li>
-                        ))}
+                        ) : users.length !== 0 ? (
+                            users.map((user) => (
+                                <li
+                                    key={user.id}
+                                    className="border-b border-gray-200 p-4"
+                                >
+                                    <h4 className="font-semibold">
+                                        {user.firstName + " " + user.lastName}
+                                    </h4>
+                                    <p className="text-sm ">{user.email}</p>
+                                </li>
+                            ))
+                        ) : (
+                            <li className="p-4 text-gray-500">
+                                No users found.
+                            </li>
+                        )}
                     </ul>
                 </div>
             </div>
