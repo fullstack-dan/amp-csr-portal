@@ -5,7 +5,7 @@ function NavLink({ href, icon: Icon, children }) {
     return (
         <Link
             to={href}
-            className="hover:underline hover:bg-base-300 flex flex-col items-center justify-center p-6 border-b border-gray-200 transition duration-200 ease-in-out"
+            className=" hover:bg-blue-950 flex flex-col items-center justify-center p-6 transition duration-200 ease-in-out"
         >
             <Icon />
             {children}
@@ -15,7 +15,7 @@ function NavLink({ href, icon: Icon, children }) {
 
 export default function Navbar() {
     return (
-        <nav className="flex justify-center md:justify-start md:flex-col md:max-w-[10%] w-full border-r border-gray-200">
+        <nav className="flex justify-center md:justify-start md:flex-col md:max-w-[10%] w-full  bg-blue-900 text-white">
             <NavLink href="/" icon={House}>
                 Home
             </NavLink>

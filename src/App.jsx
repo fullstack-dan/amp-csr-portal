@@ -16,10 +16,10 @@ import ampLogo from "./assets/amp-logo.png";
 function App() {
     return (
         <main className="h-screen flex flex-col overflow-hidden">
-            <div className="border-b flex justify-between items-center border-gray-200 p-6 flex-shrink-0">
+            <div className="border-b flex justify-between items-center border-gray-200 p-6 flex-shrink-0 bg-blue-800 text-white">
                 <Link to="/" className="flex items-center gap-4">
                     <img src={ampLogo} alt="AMP Logo" className="h-8" />
-                    <span className="text-xl hidden md:block font-bold">
+                    <span className="text-xl hidden md:block font-bold ">
                         Customer Service Representative Portal
                     </span>
                 </Link>
