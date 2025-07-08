@@ -5,7 +5,7 @@ function NavLink({ href, icon: Icon, children }) {
     return (
         <Link
             to={href}
-            className="hover:underline hover:bg-blue-50 flex flex-col items-center justify-center p-6 border-b border-gray-200 transition duration-200 ease-in-out"
+            className="hover:underline hover:bg-base-300 flex flex-col items-center justify-center p-6 border-b border-gray-200 transition duration-200 ease-in-out"
         >
             <Icon />
             {children}

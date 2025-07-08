@@ -56,21 +56,19 @@ export default function UserList({
 
             <ul className="flex-1 overflow-y-auto px-4 pb-4">
                 {loading ? (
-                    <li className="py-4 text-gray-500">Loading users...</li>
+                    <li className="py-4 ">Loading users...</li>
                 ) : users.length !== 0 ? (
                     users.map((user) => (
                         <li
                             key={user.id}
-                            className="flex justify-between border-b border-gray-200 py-4 hover:bg-gray-50 last:border-b-0 hover:cursor-pointer"
+                            className="flex justify-between border-b border-gray-200 py-4 hover:bg-base-300 last:border-b-0 hover:cursor-pointer"
                         >
                             <div>
                                 <h4 className="font-semibold">
                                     {user.firstName + " " + user.lastName}
                                 </h4>
-                                <p className="text-sm text-gray-600">
-                                    {user.email}
-                                </p>
-                                <p className="text-sm text-gray-600">
+                                <p className="text-sm ">{user.email}</p>
+                                <p className="text-sm ">
                                     {user.address.city +
                                         ", " +
                                         user.address.state}
@@ -80,14 +78,11 @@ export default function UserList({
                                 <Link to={`/users/${user.id}`}>
                                     <button className="btn">View</button>
                                 </Link>
-                                <Link to={`/users/${user.id}`}>
-                                    <button className="btn">Edit</button>
-                                </Link>
                             </div>
                         </li>
                     ))
                 ) : (
-                    <li className="py-4 text-gray-500">No users found.</li>
+                    <li className="py-4 ">No users found.</li>
                 )}
             </ul>
         </div>

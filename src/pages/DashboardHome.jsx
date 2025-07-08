@@ -62,18 +62,15 @@ export default function DashboardHome() {
 
     return (
         <div className="flex flex-col h-full overflow-hidden">
-            {/* Mobile: Stacked layout, Desktop: Side-by-side */}
             <div className="flex-1 flex flex-col md:flex-row overflow-hidden">
-                {/* Requests Section */}
+                {/* Requests section */}
                 <div className="flex-1 flex flex-col border-b md:border-b-0 md:border-r border-gray-200 overflow-hidden">
                     <h3 className="font-bold text-xl m-4 flex-shrink-0">
                         Pending Requests
                     </h3>
                     <ul className="flex-1 overflow-y-auto px-4 pb-4">
                         {reqsLoading ? (
-                            <li className="py-4 text-gray-500">
-                                Loading requests...
-                            </li>
+                            <li className="py-4 ">Loading requests...</li>
                         ) : pendingRequests.length > 0 ? (
                             pendingRequests.map((request) => (
                                 <li
@@ -87,13 +84,13 @@ export default function DashboardHome() {
                                                 l.toUpperCase()
                                             )}
                                     </h4>
-                                    <p className="text-sm text-gray-600">
+                                    <p className="text-sm ">
                                         {request.customerEmail}
                                     </p>
-                                    <p className="text-sm text-gray-700 mt-1">
+                                    <p className="text-sm  mt-1">
                                         "{request.details}"
                                     </p>
-                                    <p className="text-sm text-gray-500 mt-2 italic">
+                                    <p className="text-sm  mt-2 italic">
                                         Last Updated:{" "}
                                         {new Date(
                                             request.updatedAt
@@ -102,14 +99,12 @@ export default function DashboardHome() {
                                 </li>
                             ))
                         ) : (
-                            <li className="py-4 text-gray-500">
-                                No pending requests.
-                            </li>
+                            <li className="py-4 ">No pending requests.</li>
                         )}
                     </ul>
                 </div>
 
-                {/* Users Section */}
+                {/* Users section */}
                 <UserList
                     users={users}
                     loading={usersLoading}
