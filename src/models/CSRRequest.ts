@@ -15,7 +15,6 @@ export enum CSRRequestType {
  */
 export enum CSRRequestStatus {
     PENDING = "pending",
-    APPROVED = "approved",
     REJECTED = "rejected",
     COMPLETED = "completed",
 }

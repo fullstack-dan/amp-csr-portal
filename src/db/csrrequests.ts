@@ -25,14 +25,14 @@ export const exampleCsrRequests: CSRRequest[] = [
         id: "req-002",
         customerId: "cust-1002",
         requestType: CSRRequestType.ACCOUNT_ACCESS,
-        status: CSRRequestStatus.APPROVED,
+        status: CSRRequestStatus.COMPLETED,
         createdAt: new Date("2025-06-02T09:30:00Z").toISOString(),
         updatedAt: new Date("2025-06-02T11:00:00Z").toISOString(),
         details: "Forgot my password and need access to my account",
         history: [
             {
                 timestamp: new Date("2025-06-02T09:30:00Z").toISOString(),
-                status: CSRRequestStatus.APPROVED,
+                status: CSRRequestStatus.COMPLETED,
                 updatedBy: "csr-001",
                 comment: "Access granted after verification",
             },

@@ -42,10 +42,12 @@ export default function DashboardUsers() {
     };
 
     return (
-        <UserList
-            users={users}
-            loading={usersLoading}
-            onSearch={handleSearch}
-        />
+        <div className="flex flex-col w-full items-center h-full overflow-hidden">
+            <UserList
+                users={users}
+                loading={usersLoading}
+                onSearch={handleSearch}
+            />
+        </div>
     );
 }

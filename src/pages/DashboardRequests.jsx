@@ -89,9 +89,9 @@ export default function DashboardRequests() {
     };
 
     return (
-        <div className="flex flex-col h-full overflow-hidden">
+        <div className="flex flex-col items-center h-full overflow-hidden">
             {/* Filter bar */}
-            <div className="border-b border-gray-200 p-4 flex flex-col md:flex-row gap-2 md:items-center">
+            <div className="border-b w-full border-gray-200 p-4 flex flex-col md:flex-row gap-2 md:items-center">
                 <span className="font-medium">Filter by status:</span>
                 <div className="flex gap-2">
                     <button
@@ -118,19 +118,6 @@ export default function DashboardRequests() {
                     </button>
                     <button
                         className={`btn btn-sm ${
-                            statusFilter === CSRRequestStatus.APPROVED
-                                ? "btn-success"
-                                : "btn-ghost"
-                        }`}
-                        onClick={() =>
-                            setStatusFilter(CSRRequestStatus.APPROVED)
-                        }
-                        disabled={loading}
-                    >
-                        Approved
-                    </button>
-                    <button
-                        className={`btn btn-sm ${
                             statusFilter === CSRRequestStatus.REJECTED
                                 ? "btn-error"
                                 : "btn-ghost"
@@ -145,7 +132,7 @@ export default function DashboardRequests() {
                     <button
                         className={`btn btn-sm ${
                             statusFilter === CSRRequestStatus.COMPLETED
-                                ? "btn-info"
+                                ? "btn-success"
                                 : "btn-ghost"
                         }`}
                         onClick={() =>

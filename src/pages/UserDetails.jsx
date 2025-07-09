@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router";
+import { useParams, Link } from "react-router";
 import { mockApi as API } from "../api/mockAPI";
+import VehicleSubscriptionsList from "../components/VehicleSubscriptionsList";
 import {
     Mail,
     Phone,
@@ -92,6 +93,8 @@ function EditableField({
 export default function UserDetails() {
     const { id } = useParams();
     const [customer, setCustomer] = useState(null);
+    const [subscriptions, setSubscriptions] = useState([]);
+    const [requests, setRequests] = useState([]);
     const [loading, setLoading] = useState(true);
     const [editing, setEditing] = useState(false);
     const [formData, setFormData] = useState({});
@@ -111,8 +114,18 @@ export default function UserDetails() {
     const fetchCustomer = async (customerId) => {
         setLoading(true);
         try {
-            const customerData = await API.getCustomerById(customerId);
+            const data = await API.getCustomerWithSubscriptions(customerId);
+            console.log("Fetched customer data:", data);
+            const customerData = data.customer;
             setCustomer(customerData);
+
+            setSubscriptions(data.subscriptions || []);
+
+            const customerOpenRequests = await API.getRequestsByCustomerId(
+                customerId
+            );
+
+            setRequests(customerOpenRequests || []);
 
             setFormData({
                 firstName: customerData.firstName,
@@ -298,136 +311,206 @@ export default function UserDetails() {
                 </div>
             </div>
 
-            {/* Customer details section */}
-            <div className="flex-1 overflow-y-auto p-6">
-                <div className="max-w-2xl">
-                    <h3 className="font-bold text-lg mb-4">
-                        Customer Information
-                    </h3>
-
-                    <div className="space-y-1">
-                        <EditableField
-                            label="Phone"
-                            value={formatPhone(customer.phone)}
-                            name="phone"
-                            type="tel"
-                            editing={editing}
-                            formData={formData}
-                            onChange={handleInputChange}
-                            icon={Phone}
-                        />
-
-                        <div className="mb-4">
-                            <div className="flex items-center gap-2 mb-1">
-                                <MapPin className="w-4 h-4 " />
-                                <span className="font-semibold ">Address</span>
-                            </div>
-                            {editing ? (
-                                <div className="space-y-2">
-                                    <input
-                                        type="text"
-                                        name="street"
-                                        value={formData.street}
-                                        onChange={handleInputChange}
-                                        className="input input-bordered w-full"
-                                        placeholder="Street address"
-                                    />
-                                    <div className="flex gap-2">
+            <div className="flex h-full *:h-full">
+                {/* Customer details section */}
+                <div className="flex-1 overflow-y-auto py-6">
+                    <div className="max-w-2xl px-4">
+                        <h3 className="font-bold text-xl mb-4">
+                            Customer Information
+                        </h3>
+                        <div className="space-y-1">
+                            <EditableField
+                                label="Phone"
+                                value={formatPhone(customer.phone)}
+                                name="phone"
+                                type="tel"
+                                editing={editing}
+                                formData={formData}
+                                onChange={handleInputChange}
+                                icon={Phone}
+                            />
+                            <div className="mb-4">
+                                <div className="flex items-center gap-2 mb-1">
+                                    <MapPin className="w-4 h-4 " />
+                                    <span className="font-semibold ">
+                                        Address
+                                    </span>
+                                </div>
+                                {editing ? (
+                                    <div className="space-y-2">
                                         <input
                                             type="text"
-                                            name="city"
-                                            value={formData.city}
+                                            name="street"
+                                            value={formData.street}
                                             onChange={handleInputChange}
-                                            className="input input-bordered flex-1"
-                                            placeholder="City"
+                                            className="input input-bordered w-full"
+                                            placeholder="Street address"
                                         />
-                                        <input
-                                            type="text"
-                                            name="state"
-                                            value={formData.state}
-                                            onChange={handleInputChange}
-                                            className="input input-bordered w-24"
-                                            placeholder="State"
-                                            maxLength="2"
-                                        />
-                                        <input
-                                            type="text"
-                                            name="zipCode"
-                                            value={formData.zipCode}
-                                            onChange={handleInputChange}
-                                            className="input input-bordered w-32"
-                                            placeholder="ZIP code"
-                                        />
+                                        <div className="flex gap-2">
+                                            <input
+                                                type="text"
+                                                name="city"
+                                                value={formData.city}
+                                                onChange={handleInputChange}
+                                                className="input input-bordered flex-1"
+                                                placeholder="City"
+                                            />
+                                            <input
+                                                type="text"
+                                                name="state"
+                                                value={formData.state}
+                                                onChange={handleInputChange}
+                                                className="input input-bordered w-24"
+                                                placeholder="State"
+                                                maxLength="2"
+                                            />
+                                            <input
+                                                type="text"
+                                                name="zipCode"
+                                                value={formData.zipCode}
+                                                onChange={handleInputChange}
+                                                className="input input-bordered w-32"
+                                                placeholder="ZIP code"
+                                            />
+                                        </div>
                                     </div>
+                                ) : (
+                                    <div className=" pl-6">
+                                        <p>{customer.address.street}</p>
+                                        <p>
+                                            {customer.address.city},{" "}
+                                            {customer.address.state}{" "}
+                                            {customer.address.zipCode}
+                                        </p>
+                                    </div>
+                                )}
+                            </div>
+                            <div className="mb-4">
+                                <div className="flex items-center gap-2 mb-1">
+                                    <Calendar className="w-4 h-4 " />
+                                    <span className="font-semibold ">
+                                        Member Since
+                                    </span>
                                 </div>
+                                <p className=" pl-6">
+                                    {new Date(
+                                        customer.createdAt
+                                    ).toLocaleDateString("en-US", {
+                                        year: "numeric",
+                                        month: "long",
+                                        day: "numeric",
+                                    })}
+                                </p>
+                            </div>
+                        </div>
+                        {/* Action buttons */}
+                        <div className="flex gap-3 mt-8">
+                            {editing ? (
+                                <>
+                                    <button
+                                        className="btn btn-primary flex items-center gap-2"
+                                        onClick={handleSave}
+                                        disabled={!hasChanges}
+                                    >
+                                        <Save className="w-4 h-4" />
+                                        Save Changes
+                                    </button>
+                                    <button
+                                        className="btn flex items-center gap-2"
+                                        onClick={handleCancel}
+                                    >
+                                        <X className="w-4 h-4" />
+                                        Cancel
+                                    </button>
+                                </>
                             ) : (
-                                <div className=" pl-6">
-                                    <p>{customer.address.street}</p>
-                                    <p>
-                                        {customer.address.city},{" "}
-                                        {customer.address.state}{" "}
-                                        {customer.address.zipCode}
-                                    </p>
-                                </div>
+                                <>
+                                    <button
+                                        className="btn btn-primary flex items-center gap-2"
+                                        onClick={() => {
+                                            setInfo(
+                                                "Editing customer information"
+                                            );
+                                            setInfoColor("bg-blue-500");
+                                            setEditing(true);
+                                        }}
+                                    >
+                                        <Edit2 className="w-4 h-4" />
+                                        Edit Details
+                                    </button>
+                                    <button className="btn">
+                                        Reset Password
+                                    </button>
+                                </>
                             )}
                         </div>
-
-                        <div className="mb-4">
-                            <div className="flex items-center gap-2 mb-1">
-                                <Calendar className="w-4 h-4 " />
-                                <span className="font-semibold ">
-                                    Member Since
-                                </span>
-                            </div>
-                            <p className=" pl-6">
-                                {new Date(
-                                    customer.createdAt
-                                ).toLocaleDateString("en-US", {
-                                    year: "numeric",
-                                    month: "long",
-                                    day: "numeric",
-                                })}
-                            </p>
+                    </div>
+                    {/* Open requests section */}
+                    <div className="flex-1 overflow-y-auto mt-6 border-gray-200">
+                        <h2 className="text-xl font-semibold mb-4 px-4">
+                            Pending Requests
+                        </h2>
+                        <div>
+                            {requests.filter(
+                                (request) => request.status === "pending"
+                            ).length > 0 ? (
+                                <ul>
+                                    {requests
+                                        .filter(
+                                            (request) =>
+                                                request.status === "pending"
+                                        )
+                                        .map((request) => (
+                                            <li
+                                                key={request.id}
+                                                className="flex justify-between items-center p-4 border-b border-gray-200 last:border-b-0 hover:bg-base-300 transition duration-200 ease-in-out"
+                                            >
+                                                <div className="flex-1">
+                                                    <div className="flex items-center gap-2 mb-1">
+                                                        <h4 className="font-semibold">
+                                                            {
+                                                                request.requestType
+                                                            }
+                                                        </h4>
+                                                    </div>
+                                                    <p className="text-sm text-gray-600">
+                                                        {request.customerEmail}
+                                                    </p>
+                                                    <p className="text-sm mt-1">
+                                                        "{request.details}"
+                                                    </p>
+                                                    <p className="text-sm text-gray-500 mt-2 italic">
+                                                        Last Updated:{" "}
+                                                        {new Date(
+                                                            request.updatedAt
+                                                        ).toLocaleString()}
+                                                    </p>
+                                                </div>
+                                                <Link
+                                                    to={`/requests/${request.id}`}
+                                                    className="ml-4"
+                                                >
+                                                    <button className="btn">
+                                                        View
+                                                    </button>
+                                                </Link>
+                                            </li>
+                                        ))}
+                                </ul>
+                            ) : (
+                                <p className="text-center text-gray-500">
+                                    No pending requests.
+                                </p>
+                            )}
                         </div>
                     </div>
-
-                    {/* Action buttons */}
-                    <div className="flex gap-3 mt-8">
-                        {editing ? (
-                            <>
-                                <button
-                                    className="btn btn-primary flex items-center gap-2"
-                                    onClick={handleSave}
-                                    disabled={!hasChanges}
-                                >
-                                    <Save className="w-4 h-4" />
-                                    Save Changes
-                                </button>
-                                <button
-                                    className="btn flex items-center gap-2"
-                                    onClick={handleCancel}
-                                >
-                                    <X className="w-4 h-4" />
-                                    Cancel
-                                </button>
-                            </>
-                        ) : (
-                            <>
-                                <button
-                                    className="btn btn-primary flex items-center gap-2"
-                                    onClick={() => {
-                                        setInfo("Editing customer information");
-                                        setInfoColor("bg-blue-500");
-                                        setEditing(true);
-                                    }}
-                                >
-                                    <Edit2 className="w-4 h-4" />
-                                    Edit Details
-                                </button>
-                                <button className="btn">Reset Password</button>
-                            </>
-                        )}
-                    </div>
+                </div>
+                {/* Vehicle subscriptions section */}
+                <div className="flex-1 overflow-y-auto border-l border-gray-200">
+                    <h2 className="text-xl font-semibold p-6 mb-4">
+                        Subscriptions
+                    </h2>
+                    <VehicleSubscriptionsList subscriptions={subscriptions} />
                 </div>
             </div>
         </div>

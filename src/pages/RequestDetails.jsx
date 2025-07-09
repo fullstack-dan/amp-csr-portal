@@ -33,12 +33,10 @@ export default function RequestDetails() {
         switch (status) {
             case "pending":
                 return "badge-warning";
-            case "approved":
-                return "badge-success";
             case "rejected":
                 return "badge-error";
             case "completed":
-                return "badge-info";
+                return "badge-success";
             default:
                 return "badge-ghost";
         }
@@ -104,38 +102,41 @@ export default function RequestDetails() {
                 <div className="mb-4">
                     <h3 className="font-bold text-md">Customer Information</h3>
                     <div className="flex justify-between">
-                        <div>
-                            <p>
-                                {customer.firstName} {customer.lastName}
-                            </p>
-                            <p>
-                                {customer.address.city},{" "}
-                                {customer.address.state}{" "}
-                                {customer.address.zipCode}
-                            </p>
+                        <div className="flex gap-16">
+                            <div>
+                                <p>
+                                    {customer.firstName} {customer.lastName}
+                                </p>
+                                <p>
+                                    {customer.address.city},{" "}
+                                    {customer.address.state}{" "}
+                                    {customer.address.zipCode}
+                                </p>
+                            </div>
+                            <div className="flex gap-2 mt-2">
+                                <a
+                                    href={`mailto:${customer.email}`}
+                                    className="p-2 hover:bg-base-300 rounded-lg transition-colors"
+                                    title="Send email"
+                                >
+                                    <Mail className="w-5 h-5" />
+                                </a>
+                                <a
+                                    href={`tel:${customer.phone}`}
+                                    className="p-2 hover:bg-base-300 rounded-lg transition-colors"
+                                    title="Call customer"
+                                >
+                                    <Phone className="w-5 h-5" />
+                                </a>
+                            </div>
                         </div>
                         <div className="flex items-center gap-4">
                             <Link
                                 to={`/users/${customer.id}`}
-                                className="p-2 hover:bg-base-300 rounded-lg transition-colors"
                                 title="View customer details"
                             >
-                                <Eye />
+                                <button className="btn">View</button>
                             </Link>
-                            <a
-                                href={`mailto:${customer.email}`}
-                                className="p-2 hover:bg-base-300 rounded-lg transition-colors"
-                                title="Send email"
-                            >
-                                <Mail className="w-5 h-5" />
-                            </a>
-                            <a
-                                href={`tel:${customer.phone}`}
-                                className="p-2 hover:bg-base-300 rounded-lg transition-colors"
-                                title="Call customer"
-                            >
-                                <Phone className="w-5 h-5" />
-                            </a>
                         </div>
                     </div>
                 </div>

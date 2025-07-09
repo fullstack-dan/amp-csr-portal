@@ -18,27 +18,23 @@ export default function RequestsList({
         }
     };
 
-    const formatRequestType = (type) => {
-        return type.replace(/_/g, " ").replace(/\b\w/g, (l) => l.toUpperCase());
-    };
-
     const getStatusColor = (status) => {
         switch (status) {
             case "pending":
                 return "badge-warning";
-            case "approved":
-                return "badge-success";
             case "rejected":
                 return "badge-error";
             case "completed":
-                return "badge-info";
+                return "badge-success";
             default:
                 return "badge-ghost";
         }
     };
 
     return (
-        <div className={`flex flex-col h-full overflow-hidden ${className}`}>
+        <div
+            className={`flex flex-col h-full w-full max-w-5xl overflow-hidden ${className}`}
+        >
             {showTitle && (
                 <h3 className="font-bold text-xl m-4 flex-shrink-0">{title}</h3>
             )}
@@ -93,7 +89,7 @@ export default function RequestsList({
                             <div className="flex-1">
                                 <div className="flex items-center gap-2 mb-1">
                                     <h4 className="font-semibold">
-                                        {formatRequestType(request.requestType)}
+                                        {request.requestType}
                                     </h4>
                                     <span
                                         className={`badge badge-sm ${getStatusColor(

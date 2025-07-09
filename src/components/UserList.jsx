@@ -18,7 +18,9 @@ export default function UserList({
     };
 
     return (
-        <div className={`flex flex-col h-full overflow-hidden ${className}`}>
+        <div
+            className={`flex flex-col h-full w-full max-w-5xl overflow-hidden ${className}`}
+        >
             {showTitle && (
                 <h3 className="font-bold text-xl m-4 flex-shrink-0">{title}</h3>
             )}

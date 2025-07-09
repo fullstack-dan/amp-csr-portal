@@ -78,7 +78,6 @@ export default function CSRRequestActionModal({ request, onClose }) {
                             className="select"
                         >
                             <option value="pending">Pending</option>
-                            <option value="approved">Approved</option>
                             <option value="rejected">Rejected</option>
                             <option value="completed">Completed</option>
                         </select>
