@@ -62,23 +62,26 @@ export default function DashboardHome() {
     };
 
     return (
-        <div className="flex flex-col h-full overflow-hidden">
-            <div className="flex-1 flex flex-col md:flex-row overflow-hidden">
-                {/* Requests section */}
+        <div className="grid grid-cols-1 h-full w-full md:grid-cols-2 p-6 ">
+            {/* Requests section */}
+            <div className="p-6">
                 <RequestsList
                     requests={pendingRequests}
                     loading={reqsLoading}
                     title="Pending Requests"
-                    className="flex-1 border-b md:border-b-0 md:border-r border-gray-200"
+                    className="bg-white rounded-lg shadow-sm p-6"
                     onSearch={null} // No search in dashboard view
                 />
+            </div>
 
-                {/* Users section */}
+            {/* Users section */}
+
+            <div className="p-6">
                 <UserList
                     users={users}
                     loading={usersLoading}
                     onSearch={handleUserSearch}
-                    className="flex-1"
+                    className="bg-white rounded-lg shadow-sm p-6"
                 />
             </div>
         </div>

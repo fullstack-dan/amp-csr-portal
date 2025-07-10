@@ -89,9 +89,9 @@ export default function DashboardRequests() {
     };
 
     return (
-        <div className="flex flex-col items-center h-full overflow-hidden">
+        <div className="flex flex-col items-center overflow-hidden h-full  ">
             {/* Filter bar */}
-            <div className="border-b w-full border-gray-200 p-4 flex flex-col md:flex-row gap-2 md:items-center">
+            <div className="border-b w-full bg-white border-gray-200 p-4 flex flex-col md:flex-row gap-2 md:items-center shadow-xs">
                 <span className="font-medium">Filter by status:</span>
                 <div className="flex gap-2">
                     <button
@@ -151,13 +151,15 @@ export default function DashboardRequests() {
                 </div>
             </div>
 
-            <RequestsList
-                requests={requests}
-                loading={loading}
-                onSearch={handleSearch}
-                title="All Requests"
-                className="flex-1"
-            />
+            <div className="flex justify-center overflow-y-auto w-full p-6 ">
+                <RequestsList
+                    requests={requests}
+                    loading={loading}
+                    onSearch={handleSearch}
+                    title="All Requests"
+                    className="flex-1 bg-white rounded-lg shadow-sm p-6"
+                />
+            </div>
         </div>
     );
 }

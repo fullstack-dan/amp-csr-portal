@@ -5,6 +5,20 @@ import VehicleSubscription, {
     SubscriptionStatus,
     SubscriptionPlanType,
 } from "../models/VehicleSubscription";
+import { camelCase } from "lodash";
+
+function convertKeysToCamelCase(obj: any): any {
+    if (Array.isArray(obj)) {
+        return obj.map(convertKeysToCamelCase);
+    } else if (obj !== null && typeof obj === "object") {
+        return Object.entries(obj).reduce((acc, [key, value]) => {
+            const newKey = camelCase(key);
+            acc[newKey] = convertKeysToCamelCase(value);
+            return acc;
+        }, {} as any);
+    }
+    return obj;
+}
 
 export const supabaseAPI = {
     // CSR Requests
@@ -440,7 +454,7 @@ export const supabaseAPI = {
 
         if (error) return null;
 
-        return this.mapSubscriptionData(data);
+        return convertKeysToCamelCase(this.mapSubscriptionData(data));
     },
 
     async getSubscriptionsByCustomerId(

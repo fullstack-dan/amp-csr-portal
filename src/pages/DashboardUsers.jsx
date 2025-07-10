@@ -42,11 +42,12 @@ export default function DashboardUsers() {
     };
 
     return (
-        <div className="flex flex-col w-full items-center h-full overflow-hidden">
+        <div className="flex justify-center p-6  ">
             <UserList
                 users={users}
                 loading={usersLoading}
                 onSearch={handleSearch}
+                className="flex-1 bg-white rounded-lg shadow-sm p-6 "
             />
         </div>
     );
