@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { FocusProvider } from "./contexts/FocusContext";
 import Navbar from "./components/Navbar";
 import {
     DashboardHome,
@@ -17,7 +16,7 @@ import ampLogo from "./assets/amp-logo.png";
 function App() {
     return (
         <main className="h-screen flex flex-col bg-gray-100">
-            <div className="border-b flex justify-between items-center border-gray-200 p-6 flex-shrink-0 bg-blue-800 text-white">
+            {/* <div className="border-b flex justify-between items-center border-gray-200 p-6 flex-shrink-0 bg-blue-800 text-white">
                 <Link to="/" className="flex items-center gap-4">
                     <img src={ampLogo} alt="AMP Logo" className="h-8" />
                     <span className="text-xl hidden md:block font-bold ">
@@ -25,7 +24,7 @@ function App() {
                     </span>
                 </Link>
                 <h2 className="">Hello, User!</h2>
-            </div>
+            </div> */}
 
             <div className="flex flex-1 flex-col-reverse md:flex-row overflow-hidden">
                 <Navbar />

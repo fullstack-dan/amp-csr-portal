@@ -75,7 +75,6 @@ export default function DashboardHome() {
             </div>
 
             {/* Users section */}
-
             <div className="p-6">
                 <UserList
                     users={users}

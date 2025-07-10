@@ -1,7 +1,9 @@
-// components/RequestsList.jsx
-import React, { useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router";
 
+/**
+ * Displays a list of CSR requests with search functionality
+ */
 export default function RequestsList({
     requests,
     loading,

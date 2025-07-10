@@ -1,5 +1,8 @@
 import { Link } from "react-router";
 
+/**
+ * Table showing a user's vehicle subscriptions
+ */
 export default function VehicleSubscriptionsList({ subscriptions }) {
     if (!subscriptions || subscriptions.length === 0) {
         return (

@@ -13,6 +13,9 @@ function NavLink({ href, icon: Icon, children }) {
     );
 }
 
+/**
+ * Navbar component for the CSR portal
+ */
 export default function Navbar() {
     return (
         <nav className="flex justify-center md:justify-start md:flex-col md:max-w-[7rem] w-full  bg-blue-900 text-white">

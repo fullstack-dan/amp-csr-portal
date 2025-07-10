@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router";
 import { supabaseAPI as API } from "../api/supabaseAPI";
 import AddVehicleToSubCard from "../components/AddVehicleToSubCard";
@@ -17,10 +17,22 @@ import {
     Tag,
     Globe,
     User,
-    Clock,
-    AlertCircle,
 } from "lucide-react";
+import {
+    DetailsViewLayout,
+    DetailsHeader,
+    HeaderContent,
+    DetailsTabs,
+    DetailsContent,
+    DetailsGrid,
+    DetailsCard,
+    InfoRow,
+} from "../components/DetailsViewLayout";
 
+/**
+ * Detailed view component for subscription information,
+ * uses the details view layout
+ */
 export default function SubscriptionDetails() {
     const { subscriptionId } = useParams();
     const [subscription, setSubscription] = useState(null);
@@ -63,22 +75,7 @@ export default function SubscriptionDetails() {
             setSubscription(updatedSubscription);
             setAddingVehicle(false);
         } catch (error) {
-            console.error("Error adding vehicle:", error);
-        }
-    };
-
-    const getStatusColor = (status) => {
-        switch (status) {
-            case "paused":
-                return "badge-warning";
-            case "cancelled":
-                return "badge-error";
-            case "active":
-                return "badge-success";
-            case "expired":
-                return "badge-ghost";
-            default:
-                return "badge-ghost";
+            console.error("Error adding vehicle:", error); //TODO: add error handling
         }
     };
 
@@ -103,249 +100,164 @@ export default function SubscriptionDetails() {
         }).format(amount);
     };
 
-    if (loading) {
-        return (
-            <div className="flex items-center justify-center h-full">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500" />
-            </div>
-        );
-    }
-
-    if (!subscription) {
-        //TODO: copy this to other pages
-        return (
-            <div className="flex flex-col items-center justify-center h-full">
-                <AlertCircle className="w-12 h-12 text-gray-400 mb-4" />
-                <p className="text-gray-500">Subscription not found</p>
-                <Link to="/users" className="btn btn-primary mt-4">
-                    Back to Users
-                </Link>
-            </div>
-        );
-    }
+    const tabs = [
+        { id: "overview", label: "Overview" },
+        {
+            id: "vehicles",
+            label: "Vehicles",
+            count: subscription?.vehicles.length,
+        },
+        {
+            id: "locations",
+            label: "Locations",
+            count: subscription?.locations.length,
+        },
+        { id: "billing", label: "Billing" },
+    ];
 
     return (
-        <div className="h-full overflow-y-auto ">
-            {/* Header */}
-            <div className="bg-white border-b border-gray-200 shadow-xs">
-                <div className="p-6">
-                    <div className="flex items-center justify-between mb-4">
-                        <div>
-                            <h2 className="text-2xl font-bold flex items-center gap-2">
-                                {subscription.planType} Plan
-                                <span
-                                    className={`badge badge-sm ${getStatusColor(
-                                        subscription.status
-                                    )}`}
-                                >
-                                    {subscription.status}
-                                </span>
-                            </h2>
-                            <p className="text-sm text-gray-500">
-                                Subscription ID: {subscription.id}
-                            </p>
-                            {customer && (
-                                <Link
-                                    to={`/users/${customer.id}`}
-                                    className="text-sm text-blue-600 hover:underline flex items-center gap-1 mt-1"
-                                >
-                                    <User className="w-3 h-3" />
-                                    {customer.firstName} {customer.lastName}
-                                </Link>
-                            )}
-                        </div>
-                        <div className="flex gap-2">
+        <DetailsViewLayout
+            loading={loading}
+            notFound={!subscription}
+            notFoundMessage="Subscription not found"
+            backLink="/users"
+        >
+            <DetailsHeader>
+                <HeaderContent
+                    title={`${subscription?.planType} Plan`}
+                    subtitle={`Subscription ID: ${subscription?.id}`}
+                    badge={subscription?.status}
+                    badgeColor={`badge-${
+                        subscription?.status === "active"
+                            ? "success"
+                            : subscription?.status === "paused"
+                            ? "warning"
+                            : "error"
+                    }`}
+                    actions={
+                        <>
                             <button className="btn btn-outline">
                                 Edit Subscription
                             </button>
                             <button className="btn btn-primary">
                                 Manage Billing
                             </button>
-                        </div>
-                    </div>
+                        </>
+                    }
+                >
+                    {customer && (
+                        <Link
+                            to={`/users/${customer.id}`}
+                            className="text-sm text-blue-600 hover:underline flex items-center gap-1 mt-1"
+                        >
+                            <User className="w-3 h-3" />
+                            {customer.firstName} {customer.lastName}
+                        </Link>
+                    )}
+                </HeaderContent>
+                <DetailsTabs
+                    tabs={tabs}
+                    activeTab={activeTab}
+                    onTabChange={setActiveTab}
+                />
+            </DetailsHeader>
 
-                    {/* Tabs */}
-                    <div className="tabs tabs-boxed">
-                        <button
-                            className={`tab ${
-                                activeTab === "overview" ? "tab-active" : ""
-                            }`}
-                            onClick={() => setActiveTab("overview")}
-                        >
-                            Overview
-                        </button>
-                        <button
-                            className={`tab ${
-                                activeTab === "vehicles" ? "tab-active" : ""
-                            }`}
-                            onClick={() => setActiveTab("vehicles")}
-                        >
-                            Vehicles ({subscription.vehicles.length})
-                        </button>
-                        <button
-                            className={`tab ${
-                                activeTab === "locations" ? "tab-active" : ""
-                            }`}
-                            onClick={() => setActiveTab("locations")}
-                        >
-                            Locations ({subscription.locations.length})
-                        </button>
-                        <button
-                            className={`tab ${
-                                activeTab === "billing" ? "tab-active" : ""
-                            }`}
-                            onClick={() => setActiveTab("billing")}
-                        >
-                            Billing
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            {/* Content */}
-            <div className="p-6">
+            <DetailsContent>
                 {activeTab === "overview" && (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {/* Plan Details */}
-                        <div className="bg-white rounded-lg shadow-sm p-6">
-                            <h3 className="font-semibold text-lg mb-4 flex items-center gap-2">
-                                <Tag className="w-5 h-5" />
-                                Plan Details
-                            </h3>
+                    <DetailsGrid cols={3}>
+                        {/* Plan details */}
+                        <DetailsCard title="Plan Details" icon={Tag}>
                             <div className="space-y-3">
-                                <div>
-                                    <p className="text-sm text-gray-600">
-                                        Plan Type
-                                    </p>
-                                    <p className="font-medium">
-                                        {subscription.planType}
-                                    </p>
-                                </div>
-                                <div>
-                                    <p className="text-sm text-gray-600">
-                                        Max Vehicles
-                                    </p>
-                                    <p className="font-medium">
-                                        {subscription.vehicles.length} /{" "}
-                                        {subscription.planFeatures.maxVehicles}
-                                    </p>
-                                </div>
-                                <div>
-                                    <p className="text-sm text-gray-600">
-                                        Monthly Washes
-                                    </p>
-                                    <p className="font-medium">
-                                        {
-                                            subscription.planFeatures
-                                                .maxWashesPerMonth
-                                        }
-                                    </p>
-                                </div>
+                                <InfoRow
+                                    label="Plan Type"
+                                    value={subscription?.planType}
+                                />
+                                <InfoRow
+                                    label="Max Vehicles"
+                                    value={`${subscription?.vehicles.length} / ${subscription?.planFeatures.maxVehicles}`}
+                                />
+                                <InfoRow
+                                    label="Monthly Washes"
+                                    value={
+                                        subscription?.planFeatures
+                                            .maxWashesPerMonth
+                                    }
+                                />
                                 <div>
                                     <p className="text-sm text-gray-600">
                                         Detailing Included
                                     </p>
                                     <p className="font-medium flex items-center gap-1">
-                                        {subscription.planFeatures
+                                        {subscription?.planFeatures
                                             .detailingIncluded ? (
                                             <>
-                                                <CheckCircle className="w-4 h-4 text-green-500" />
+                                                <CheckCircle className="w-4 h-4 text-green-500" />{" "}
                                                 Yes
                                             </>
                                         ) : (
                                             <>
-                                                <XCircle className="w-4 h-4 text-red-500" />
+                                                <XCircle className="w-4 h-4 text-red-500" />{" "}
                                                 No
                                             </>
                                         )}
                                     </p>
                                 </div>
                             </div>
-                        </div>
+                        </DetailsCard>
 
-                        {/* Subscription Timeline */}
-                        <div className="bg-white rounded-lg shadow-sm p-6">
-                            <h3 className="font-semibold text-lg mb-4 flex items-center gap-2">
-                                <Calendar className="w-5 h-5" />
-                                Timeline
-                            </h3>
+                        {/* Timeline */}
+                        <DetailsCard title="Timeline" icon={Calendar}>
                             <div className="space-y-3">
-                                <div>
-                                    <p className="text-sm text-gray-600">
-                                        Start Date
-                                    </p>
-                                    <p className="font-medium">
-                                        {new Date(
-                                            subscription.startDate
-                                        ).toLocaleDateString()}
-                                    </p>
-                                </div>
-                                <div>
-                                    <p className="text-sm text-gray-600">
-                                        Created
-                                    </p>
-                                    <p className="font-medium">
-                                        {new Date(
-                                            subscription.createdAt
-                                        ).toLocaleDateString()}
-                                    </p>
-                                </div>
-                                <div>
-                                    <p className="text-sm text-gray-600">
-                                        Last Updated
-                                    </p>
-                                    <p className="font-medium">
-                                        {new Date(
-                                            subscription.updatedAt
-                                        ).toLocaleDateString()}
-                                    </p>
-                                </div>
-                                {subscription.status === "paused" &&
-                                    subscription.pausedAt && (
-                                        <div>
-                                            <p className="text-sm text-gray-600">
-                                                Paused Since
-                                            </p>
-                                            <p className="font-medium text-warning">
-                                                {new Date(
-                                                    subscription.pausedAt
-                                                ).toLocaleDateString()}
-                                            </p>
-                                        </div>
+                                <InfoRow
+                                    label="Start Date"
+                                    value={new Date(
+                                        subscription?.startDate
+                                    ).toLocaleDateString()}
+                                />
+                                <InfoRow
+                                    label="Created"
+                                    value={new Date(
+                                        subscription?.createdAt
+                                    ).toLocaleDateString()}
+                                />
+                                <InfoRow
+                                    label="Last Updated"
+                                    value={new Date(
+                                        subscription?.updatedAt
+                                    ).toLocaleDateString()}
+                                />
+                                {subscription?.status === "paused" &&
+                                    subscription?.pausedAt && (
+                                        <InfoRow
+                                            label="Paused Since"
+                                            value={new Date(
+                                                subscription.pausedAt
+                                            ).toLocaleDateString()}
+                                        />
                                     )}
-                                {subscription.status === "cancelled" &&
-                                    subscription.cancelledAt && (
-                                        <div>
-                                            <p className="text-sm text-gray-600">
-                                                Cancelled On
-                                            </p>
-                                            <p className="font-medium text-error">
-                                                {new Date(
-                                                    subscription.cancelledAt
-                                                ).toLocaleDateString()}
-                                            </p>
-                                        </div>
+                                {subscription?.status === "cancelled" &&
+                                    subscription?.cancelledAt && (
+                                        <InfoRow
+                                            label="Cancelled On"
+                                            value={new Date(
+                                                subscription.cancelledAt
+                                            ).toLocaleDateString()}
+                                        />
                                     )}
                             </div>
-                        </div>
+                        </DetailsCard>
 
-                        {/* Quick Stats */}
-                        <div className="bg-white rounded-lg shadow-sm p-6">
-                            <h3 className="font-semibold text-lg mb-4 flex items-center gap-2">
-                                <DollarSign className="w-5 h-5" />
-                                Quick Stats
-                            </h3>
+                        {/* Quick stats */}
+                        <DetailsCard title="Quick Stats" icon={DollarSign}>
                             <div className="space-y-3">
                                 <div>
-                                    <p className="text-sm text-gray-600">
-                                        Monthly Cost
-                                    </p>
-                                    <p className="font-medium text-2xl">
-                                        {formatCurrency(
-                                            subscription.billingInfo.amount
+                                    <InfoRow
+                                        label="Monthly Cost"
+                                        value={formatCurrency(
+                                            subscription?.billingInfo.amount
                                         )}
-                                    </p>
-                                    {subscription.billingInfo.discount && (
+                                    />
+                                    {subscription?.billingInfo.discount && (
                                         <p className="text-sm text-green-600">
                                             Save{" "}
                                             {formatCurrency(
@@ -356,243 +268,193 @@ export default function SubscriptionDetails() {
                                         </p>
                                     )}
                                 </div>
-                                <div>
-                                    <p className="text-sm text-gray-600">
-                                        Active Vehicles
-                                    </p>
-                                    <p className="font-medium">
-                                        {subscription.vehicles.length}
-                                    </p>
-                                </div>
-                                <div>
-                                    <p className="text-sm text-gray-600">
-                                        Available Locations
-                                    </p>
-                                    <p className="font-medium">
-                                        {subscription.locations.length}
-                                    </p>
-                                </div>
+                                <InfoRow
+                                    label="Active Vehicles"
+                                    value={subscription?.vehicles.length}
+                                />
+                                <InfoRow
+                                    label="Available Locations"
+                                    value={subscription?.locations.length}
+                                />
                             </div>
-                        </div>
-                    </div>
+                        </DetailsCard>
+                    </DetailsGrid>
                 )}
 
                 {activeTab === "vehicles" && (
-                    <div className="bg-white rounded-lg shadow-sm">
-                        <div className="p-6">
-                            <h3 className="font-semibold text-lg mb-4 flex items-center gap-2">
-                                <Car className="w-5 h-5" />
-                                Registered Vehicles
-                            </h3>
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                                {subscription.vehicles.map((vehicle) => (
-                                    <div
-                                        key={vehicle.id}
-                                        className="border rounded-lg p-4"
-                                    >
-                                        <div className="flex justify-between items-start mb-2">
-                                            <div>
-                                                <h4 className="font-semibold">
-                                                    {vehicle.year}{" "}
-                                                    {vehicle.make}{" "}
-                                                    {vehicle.model}
-                                                </h4>
-                                                <p className="text-sm text-gray-600">
-                                                    {vehicle.color}
-                                                </p>
-                                            </div>
-                                            <button className="btn btn-ghost btn-sm">
-                                                <Eye className="w-4 h-4" />
-                                            </button>
-                                        </div>
-                                        <div className="space-y-1 text-sm">
-                                            <p>
-                                                <span className="text-gray-600">
-                                                    License:
-                                                </span>{" "}
-                                                {vehicle.licensePlate}
-                                            </p>
-                                            <p>
-                                                <span className="text-gray-600">
-                                                    VIN:
-                                                </span>{" "}
-                                                {vehicle.vin}
-                                            </p>
-                                            <p>
-                                                <span className="text-gray-600">
-                                                    Added:
-                                                </span>{" "}
-                                                {new Date(
-                                                    vehicle.addedAt
-                                                ).toLocaleDateString()}
+                    <DetailsCard title="Registered Vehicles" icon={Car}>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            {subscription?.vehicles.map((vehicle) => (
+                                <div
+                                    key={vehicle.id}
+                                    className="border rounded-lg p-4"
+                                >
+                                    <div className="flex justify-between items-start mb-2">
+                                        <div>
+                                            <h4 className="font-semibold">
+                                                {vehicle.year} {vehicle.make}{" "}
+                                                {vehicle.model}
+                                            </h4>
+                                            <p className="text-sm text-gray-600">
+                                                {vehicle.color}
                                             </p>
                                         </div>
+                                        <button className="btn btn-ghost btn-sm">
+                                            <Eye className="w-4 h-4" />
+                                        </button>
                                     </div>
-                                ))}
-                                {subscription.vehicles.length <
-                                    subscription.planFeatures.maxVehicles && (
-                                    <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 w-full flex items-center justify-center">
-                                        {addingVehicle ? (
-                                            <AddVehicleToSubCard
-                                                cancelForm={() =>
-                                                    setAddingVehicle(false)
-                                                }
-                                                onSubmit={
-                                                    addVehicleToSubscription
-                                                }
-                                            />
-                                        ) : (
-                                            <button
-                                                className="btn btn-outline"
-                                                onClick={() =>
-                                                    setAddingVehicle(true)
-                                                }
-                                            >
-                                                Add Vehicle
-                                            </button>
-                                        )}
+                                    <div className="space-y-1 text-sm">
+                                        <p>
+                                            <span className="text-gray-600">
+                                                License:
+                                            </span>{" "}
+                                            {vehicle.licensePlate}
+                                        </p>
+                                        <p>
+                                            <span className="text-gray-600">
+                                                VIN:
+                                            </span>{" "}
+                                            {vehicle.vin}
+                                        </p>
+                                        <p>
+                                            <span className="text-gray-600">
+                                                Added:
+                                            </span>{" "}
+                                            {new Date(
+                                                vehicle.addedAt
+                                            ).toLocaleDateString()}
+                                        </p>
                                     </div>
-                                )}
-                            </div>
+                                </div>
+                            ))}
+                            {subscription?.vehicles.length <
+                                subscription?.planFeatures.maxVehicles && (
+                                <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 w-full flex items-center justify-center">
+                                    {addingVehicle ? (
+                                        <AddVehicleToSubCard
+                                            cancelForm={() =>
+                                                setAddingVehicle(false)
+                                            }
+                                            onSubmit={addVehicleToSubscription}
+                                        />
+                                    ) : (
+                                        <button
+                                            className="btn btn-outline"
+                                            onClick={() =>
+                                                setAddingVehicle(true)
+                                            }
+                                        >
+                                            Add Vehicle
+                                        </button>
+                                    )}
+                                </div>
+                            )}
                         </div>
-                    </div>
+                    </DetailsCard>
                 )}
 
                 {activeTab === "locations" && (
-                    <div className="bg-white rounded-lg shadow-sm">
-                        <div className="p-6">
-                            <h3 className="font-semibold text-lg mb-4 flex items-center gap-2">
-                                <Building2 className="w-5 h-5" />
-                                Available Locations
-                            </h3>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                {subscription.locations.map((location) => (
-                                    <div
-                                        key={location.id}
-                                        className="border rounded-lg p-4"
-                                    >
-                                        <h4 className="font-semibold mb-2">
-                                            {location.name}
-                                        </h4>
-                                        <div className="space-y-2 text-sm">
-                                            <div className="flex items-start gap-2">
-                                                <MapPin className="w-4 h-4 text-gray-400 mt-0.5" />
-                                                <div>
-                                                    <p>{location.address}</p>
-                                                    <p>
-                                                        {location.city},{" "}
-                                                        {location.state}{" "}
-                                                        {location.zip}
-                                                    </p>
-                                                </div>
+                    <DetailsCard title="Available Locations" icon={Building2}>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            {subscription?.locations.map((location) => (
+                                <div
+                                    key={location.id}
+                                    className="border rounded-lg p-4"
+                                >
+                                    <h4 className="font-semibold mb-2">
+                                        {location.name}
+                                    </h4>
+                                    <div className="space-y-2 text-sm">
+                                        <div className="flex items-start gap-2">
+                                            <MapPin className="w-4 h-4 text-gray-400 mt-0.5" />
+                                            <div>
+                                                <p>{location.address}</p>
+                                                <p>
+                                                    {location.city},{" "}
+                                                    {location.state}{" "}
+                                                    {location.zip}
+                                                </p>
                                             </div>
-                                            <div className="flex items-center gap-2">
-                                                <Phone className="w-4 h-4 text-gray-400" />
-                                                <p>{location.phone}</p>
-                                            </div>
-                                            <div className="flex items-center gap-2">
-                                                <Mail className="w-4 h-4 text-gray-400" />
-                                                <p>{location.email}</p>
-                                            </div>
-                                            {location.website && (
-                                                <div className="flex items-center gap-2">
-                                                    <Globe className="w-4 h-4 text-gray-400" />
-                                                    <a
-                                                        href={`https://${location.website}`}
-                                                        target="_blank"
-                                                        rel="noopener noreferrer"
-                                                        className="text-blue-600 hover:underline"
-                                                    >
-                                                        {location.website}
-                                                    </a>
-                                                </div>
-                                            )}
                                         </div>
+                                        <div className="flex items-center gap-2">
+                                            <Phone className="w-4 h-4 text-gray-400" />
+                                            <p>{location.phone}</p>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            <Mail className="w-4 h-4 text-gray-400" />
+                                            <p>{location.email}</p>
+                                        </div>
+                                        {location.website && (
+                                            <div className="flex items-center gap-2">
+                                                <Globe className="w-4 h-4 text-gray-400" />
+                                                <a
+                                                    href={`https://${location.website}`}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="text-blue-600 hover:underline"
+                                                >
+                                                    {location.website}
+                                                </a>
+                                            </div>
+                                        )}
                                     </div>
-                                ))}
-                            </div>
+                                </div>
+                            ))}
                         </div>
-                    </div>
+                    </DetailsCard>
                 )}
 
                 {activeTab === "billing" && (
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                        {/* Billing Overview */}
-                        <div className="bg-white rounded-lg shadow-sm p-6">
-                            <h3 className="font-semibold text-lg mb-4 flex items-center gap-2">
-                                <CreditCard className="w-5 h-5" />
-                                Billing Information
-                            </h3>
+                    <DetailsGrid cols={2}>
+                        {/* Billing information */}
+                        <DetailsCard
+                            title="Billing Information"
+                            icon={CreditCard}
+                        >
                             <div className="space-y-3">
-                                <div>
-                                    <p className="text-sm text-gray-600">
-                                        Billing Frequency
-                                    </p>
-                                    <p className="font-medium capitalize">
-                                        {subscription.billingInfo.frequency}
-                                    </p>
-                                </div>
-                                <div>
-                                    <p className="text-sm text-gray-600">
-                                        Amount
-                                    </p>
-                                    <p className="font-medium text-xl">
-                                        {formatCurrency(
-                                            subscription.billingInfo.amount
-                                        )}
-                                        <span className="text-sm text-gray-600">
-                                            /
-                                            {subscription.billingInfo.frequency}
-                                        </span>
-                                    </p>
-                                </div>
-                                <div>
-                                    <p className="text-sm text-gray-600">
-                                        Payment Method
-                                    </p>
-                                    <p className="font-medium">
-                                        {getPaymentMethodDisplay(
-                                            subscription.billingInfo
-                                                .paymentMethod
-                                        )}
-                                    </p>
-                                </div>
-                                <div>
-                                    <p className="text-sm text-gray-600">
-                                        Next Billing Date
-                                    </p>
-                                    <p className="font-medium">
-                                        {new Date(
-                                            subscription.billingInfo.nextBillingDate
-                                        ).toLocaleDateString()}
-                                    </p>
-                                </div>
-                                <div>
-                                    <p className="text-sm text-gray-600">
-                                        Last Billed
-                                    </p>
-                                    <p className="font-medium">
-                                        {new Date(
-                                            subscription.billingInfo.lastBillingDate
-                                        ).toLocaleDateString()}
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
+                                <InfoRow
+                                    label="Billing Frequency"
+                                    value={subscription?.billingInfo.frequency}
+                                />
+                                <InfoRow
+                                    label="Amount"
+                                    value={`${formatCurrency(
+                                        subscription?.billingInfo.amount
+                                    )} (${
+                                        subscription?.billingInfo.frequency
+                                    })`}
+                                />
 
-                        {/* Discount Information */}
-                        {subscription.billingInfo.discount && (
-                            <div className="bg-white rounded-lg shadow-sm p-6">
-                                <h3 className="font-semibold text-lg mb-4 flex items-center gap-2">
-                                    <Tag className="w-5 h-5" />
-                                    Active Discount
-                                </h3>
+                                <InfoRow
+                                    label="Payment Method"
+                                    value={getPaymentMethodDisplay(
+                                        subscription?.billingInfo.paymentMethod
+                                    )}
+                                />
+                                <InfoRow
+                                    label="Next Billing Date"
+                                    value={new Date(
+                                        subscription?.billingInfo.nextBillingDate
+                                    ).toLocaleDateString()}
+                                />
+                                <InfoRow
+                                    label="Last Billed"
+                                    value={new Date(
+                                        subscription?.billingInfo.lastBillingDate
+                                    ).toLocaleDateString()}
+                                />
+                            </div>
+                        </DetailsCard>
+
+                        {/* Discount information */}
+                        {subscription?.billingInfo.discount && (
+                            <DetailsCard title="Active Discount" icon={Tag}>
                                 <div className="space-y-3">
                                     <div>
-                                        <p className="text-sm text-gray-600">
+                                        <p className="font-medium text-gray-600">
                                             Discount
                                         </p>
-                                        <p className="font-medium text-green-600">
+                                        <p className=" text-green-600">
                                             {subscription.billingInfo.discount
                                                 .percentage
                                                 ? `${subscription.billingInfo.discount.percentage}% off`
@@ -602,32 +464,24 @@ export default function SubscriptionDetails() {
                                                   ) + " off"}
                                         </p>
                                     </div>
-                                    <div>
-                                        <p className="text-sm text-gray-600">
-                                            Reason
-                                        </p>
-                                        <p className="font-medium">
-                                            {
-                                                subscription.billingInfo
-                                                    .discount.reason
-                                            }
-                                        </p>
-                                    </div>
-                                    <div>
-                                        <p className="text-sm text-gray-600">
-                                            Valid Until
-                                        </p>
-                                        <p className="font-medium">
-                                            {new Date(
-                                                subscription.billingInfo.discount.validUntil
-                                            ).toLocaleDateString()}
-                                        </p>
-                                    </div>
+                                    <InfoRow
+                                        label="Reason"
+                                        value={
+                                            subscription.billingInfo.discount
+                                                .reason
+                                        }
+                                    />
+                                    <InfoRow
+                                        label="Valid Until"
+                                        value={new Date(
+                                            subscription.billingInfo.discount.validUntil
+                                        ).toLocaleDateString()}
+                                    />
                                     <div className="pt-2">
-                                        <p className="text-sm text-gray-600">
+                                        <p className="font-medium text-gray-600">
                                             You're saving
                                         </p>
-                                        <p className="font-semibold text-green-600 text-xl">
+                                        <p className=" text-green-600 text-xl">
                                             {formatCurrency(
                                                 subscription.billingInfo
                                                     .discount.amount * 12
@@ -636,11 +490,11 @@ export default function SubscriptionDetails() {
                                         </p>
                                     </div>
                                 </div>
-                            </div>
+                            </DetailsCard>
                         )}
-                    </div>
+                    </DetailsGrid>
                 )}
-            </div>
-        </div>
+            </DetailsContent>
+        </DetailsViewLayout>
     );
 }

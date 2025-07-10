@@ -3,7 +3,6 @@ import { Customer } from "../models/User";
 import CSRRequest, { CSRRequestStatus } from "../models/CSRRequest";
 import VehicleSubscription, {
     SubscriptionStatus,
-    SubscriptionPlanType,
 } from "../models/VehicleSubscription";
 import { camelCase } from "lodash";
 
@@ -20,6 +19,13 @@ function convertKeysToCamelCase(obj: any): any {
     return obj;
 }
 
+/**
+ * API for interacting with Supabase for CSR requests, customers, and vehicle subscriptions.
+ *
+ * Honestly, 90% AI generated. The focus of this project was the front end, so I was happy
+ * to let AI handle the backend logic. I placed my focus on making sure I properly consumed
+ * and handled the data returned from these API calls.
+ */
 export const supabaseAPI = {
     // CSR Requests
     async getAllRequests(): Promise<CSRRequest[]> {

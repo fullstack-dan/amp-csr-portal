@@ -1,8 +1,10 @@
-// DashboardUsers.jsx
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { supabaseAPI as API } from "../api/supabaseAPI";
 import UserList from "../components/UserList";
 
+/**
+ * DashboardUsers component displays a list of users and a user search bar in the admin dashboard
+ */
 export default function DashboardUsers() {
     const [users, setUsers] = useState([]);
     const [usersLoading, setUsersLoading] = useState(true);

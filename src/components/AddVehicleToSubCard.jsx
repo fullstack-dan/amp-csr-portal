@@ -1,5 +1,8 @@
-import React, { useState } from "react";
+import { useState } from "react";
 
+/**
+ * Form to add a vehicle to a subscription
+ */
 export default function AddVehicleToSubCard({ cancelForm, onSubmit }) {
     const initialFormState = {
         year: "",

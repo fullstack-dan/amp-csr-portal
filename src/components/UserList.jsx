@@ -1,6 +1,9 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router";
 
+/**
+ * Displays a list of users with search functionality.
+ */
 export default function UserList({
     users,
     loading,
