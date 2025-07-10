@@ -83,11 +83,12 @@ export default function SubscriptionDetails() {
         }
     };
 
-    const onModalClose = async (modfiedSub = null) => {
+    const onModalClose = async (modifiedSub = null) => {
         document.getElementById("modifysub_modal").close();
         setLoading(true);
-        if (modfiedSub) {
-            await API.updateSubscription(modfiedSub);
+        if (modifiedSub._targetInst !== null) {
+            //weirdly, onClose in this modal is returning an actual object. Workaround.
+            await API.updateSubscription(modifiedSub);
             const updatedSubscription = await API.getSubscriptionById(
                 subscriptionId
             );
@@ -167,6 +168,9 @@ export default function SubscriptionDetails() {
                     }`}
                     actions={
                         <>
+                            <button className="btn btn-outline">
+                                Transfer Subscription
+                            </button>
                             <button
                                 className="btn btn-primary"
                                 onClick={handleModifySubscription}

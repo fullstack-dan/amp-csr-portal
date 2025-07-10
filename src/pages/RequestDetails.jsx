@@ -50,7 +50,7 @@ export default function RequestDetails() {
     const onModalClose = async (modifiedReq = null) => {
         document.getElementById("csrreqaction_modal").close();
         setLoading(true);
-        if (modifiedReq) {
+        if (modifiedReq !== null) {
             await API.updateRequest(modifiedReq);
             const newRequest = await API.getRequestById(requestId);
             setRequest(newRequest);

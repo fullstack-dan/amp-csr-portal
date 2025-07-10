@@ -19,7 +19,9 @@ export default function ModifySubscriptionModal({ subscription, onClose }) {
         subscription.billingInfo.amount
     );
 
-    const handleSave = () => {
+    const handleSave = (event) => {
+        event.preventDefault();
+
         const updated = {
             ...subscription,
             planType,
