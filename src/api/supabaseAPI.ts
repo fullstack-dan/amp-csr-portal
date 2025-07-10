@@ -406,31 +406,6 @@ export const supabaseAPI = {
     },
 
     // Vehicle Subscriptions
-    async getAllSubscriptions(): Promise<VehicleSubscription[]> {
-        const { data, error } = await supabase
-            .from("vehicle_subscriptions")
-            .select(
-                `
-                *,
-                features:subscription_plan_features(*),
-                locations:subscription_locations(
-                    location:car_wash_locations(*)
-                ),
-                vehicles(*),
-                billing:billing_info(
-                    *,
-                    payment_method:payment_methods(*)
-                ),
-                discount:billing_discounts(*)
-            `
-            )
-            .order("created_at", { ascending: false });
-
-        if (error) throw error;
-
-        return data.map((sub) => this.mapSubscriptionData(sub));
-    },
-
     async getSubscriptionById(id: string): Promise<VehicleSubscription | null> {
         const { data, error } = await supabase
             .from("vehicle_subscriptions")
@@ -552,115 +527,6 @@ export const supabaseAPI = {
         };
     },
 
-    // Dashboard Statistics
-    async getDashboardStats() {
-        // Get counts using Supabase's count functionality
-        const [
-            { count: totalRequests },
-            { count: pendingRequests },
-            { count: completedRequests },
-            { count: totalCustomers },
-            { count: totalSubscriptions },
-            { count: activeSubscriptions },
-            { data: revenueData },
-        ] = await Promise.all([
-            supabase
-                .from("csr_requests")
-                .select("*", { count: "exact", head: true }),
-            supabase
-                .from("csr_requests")
-                .select("*", { count: "exact", head: true })
-                .eq("status", "pending"),
-            supabase
-                .from("csr_requests")
-                .select("*", { count: "exact", head: true })
-                .eq("status", "completed"),
-            supabase
-                .from("users")
-                .select("*", { count: "exact", head: true })
-                .eq("role", "customer"),
-            supabase
-                .from("vehicle_subscriptions")
-                .select("*", { count: "exact", head: true }),
-            supabase
-                .from("vehicle_subscriptions")
-                .select("*", { count: "exact", head: true })
-                .eq("status", "active"),
-            supabase
-                .from("billing_info")
-                .select("amount, frequency")
-                .eq(
-                    "subscription_id",
-                    supabase
-                        .from("vehicle_subscriptions")
-                        .select("id")
-                        .eq("status", "active")
-                ),
-        ]);
-
-        // Calculate MRR
-        let monthlyRecurringRevenue = 0;
-        if (revenueData) {
-            monthlyRecurringRevenue = revenueData.reduce(
-                (total: number, billing: any) => {
-                    const amount = parseFloat(billing.amount);
-                    switch (billing.frequency) {
-                        case "quarterly":
-                            return total + amount / 3;
-                        case "semi_annual":
-                            return total + amount / 6;
-                        case "annual":
-                            return total + amount / 12;
-                        default:
-                            return total + amount;
-                    }
-                },
-                0
-            );
-        }
-
-        // Get subscription counts by plan
-        const { data: planCounts } = await supabase
-            .from("vehicle_subscriptions")
-            .select("plan_type")
-            .eq("status", "active");
-
-        const subscriptionsByPlan = {
-            basic: 0,
-            standard: 0,
-            premium: 0,
-            enterprise: 0,
-        };
-
-        if (planCounts) {
-            planCounts.forEach((sub: any) => {
-                const planKey =
-                    sub.plan_type.toLowerCase() as keyof typeof subscriptionsByPlan;
-                subscriptionsByPlan[planKey]++;
-            });
-        }
-
-        // Get total vehicles count
-        const { count: totalVehicles } = await supabase
-            .from("vehicles")
-            .select("*", { count: "exact", head: true });
-
-        return {
-            totalRequests: totalRequests || 0,
-            pendingRequests: pendingRequests || 0,
-            completedRequests: completedRequests || 0,
-            totalCustomers: totalCustomers || 0,
-            totalSubscriptions: totalSubscriptions || 0,
-            activeSubscriptions: activeSubscriptions || 0,
-            pausedSubscriptions:
-                (totalSubscriptions || 0) - (activeSubscriptions || 0),
-            totalVehicles: totalVehicles || 0,
-            monthlyRecurringRevenue:
-                Math.round(monthlyRecurringRevenue * 100) / 100,
-            subscriptionsByPlan,
-        };
-    },
-
     // Combined customer data with subscriptions
     async getCustomerWithSubscriptions(customerId: string) {
         const customer = await this.getCustomerById(customerId);
@@ -773,46 +639,5 @@ export const supabaseAPI = {
         if (error) throw error;
 
         return this.getSubscriptionById(subscriptionId);
-    },
-
-    // Search functionality
-    async searchCustomers(query: string): Promise<Customer[]> {
-        const { data, error } = await supabase
-            .from("users")
-            .select(
-                `
-                *,
-                address:customer_addresses(*)
-            `
-            )
-            .eq("role", "customer")
-            .or(
-                `first_name.ilike.%${query}%,last_name.ilike.%${query}%,email.ilike.%${query}%`
-            );
-
-        if (error) throw error;
-
-        return data.map((user) => ({
-            id: user.id,
-            firstName: user.first_name,
-            lastName: user.last_name,
-            email: user.email,
-            phone: user.phone,
-            profilePicture: user.profile_picture,
-            role: user.role,
-            password: user.password,
-            createdAt: user.created_at,
-            updatedAt: user.updated_at,
-            address: user.address
-                ? {
-                      street: user.address.street,
-                      city: user.address.city,
-                      state: user.address.state,
-                      zipCode: user.address.zip_code,
-                  }
-                : undefined,
-            vehicleSubscriptions: [],
-            CSRRequests: [],
-        }));
     },
 };

@@ -20,7 +20,14 @@ function UserInfoDisplay({ customer }) {
             <h2 className="text-2xl font-bold">
                 {customer.firstName} {customer.lastName}
             </h2>
-            <p className="text-gray-600">{customer.email}</p>
+            <p>
+                Member since{" "}
+                {new Date(customer.createdAt).toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                })}
+            </p>
         </>
     );
 }
@@ -29,31 +36,29 @@ function UserInfoEdit({ formData, onChange }) {
     return (
         <div className="space-y-2">
             <div className="flex gap-2">
-                <input
-                    type="text"
-                    name="firstName"
-                    placeholder="First name"
-                    className="input input-bordered flex-1"
-                    value={formData.firstName}
-                    onChange={onChange}
-                />
-                <input
-                    type="text"
-                    name="lastName"
-                    placeholder="Last name"
-                    className="input input-bordered flex-1"
-                    value={formData.lastName}
-                    onChange={onChange}
-                />
+                <div className="flex flex-col">
+                    <label className="text-xs text-gray-600">First name</label>
+                    <input
+                        type="text"
+                        name="firstName"
+                        placeholder="First name"
+                        className="input input-bordered flex-1"
+                        value={formData.firstName}
+                        onChange={onChange}
+                    />
+                </div>
+                <div className="flex flex-col">
+                    <label className="text-xs text-gray-600">Last name</label>
+                    <input
+                        type="text"
+                        name="lastName"
+                        placeholder="Last name"
+                        className="input input-bordered flex-1"
+                        value={formData.lastName}
+                        onChange={onChange}
+                    />
+                </div>
             </div>
-            <input
-                type="email"
-                name="email"
-                placeholder="Email"
-                className="input input-bordered w-full"
-                value={formData.email}
-                onChange={onChange}
-            />
         </div>
     );
 }
@@ -420,6 +425,19 @@ export default function UserDetails() {
                                             placeholder="Phone number"
                                         />
                                     </div>
+                                    <div>
+                                        <label className="text-sm text-gray-600">
+                                            Email
+                                        </label>
+                                        <input
+                                            type="email"
+                                            name="email"
+                                            value={formData.email}
+                                            onChange={handleInputChange}
+                                            className="input input-bordered w-full mt-1"
+                                            placeholder="Phone number"
+                                        />
+                                    </div>
                                 </div>
                             ) : (
                                 <div className="space-y-3">
@@ -448,7 +466,6 @@ export default function UserDetails() {
                                 </div>
                             )}
                         </div>
-
                         {/* Address */}
                         <div className="bg-white rounded-lg shadow-sm p-6">
                             <h3 className="font-semibold text-lg mb-4 flex items-center gap-2">
@@ -504,8 +521,7 @@ export default function UserDetails() {
                                 </div>
                             )}
                         </div>
-
-                        {/* Account Status */}
+                        {/* Account Status //TODO: change this to purchase history */}
                         <div className="bg-white rounded-lg shadow-sm p-6">
                             <h3 className="font-semibold text-lg mb-4 flex items-center gap-2">
                                 <Activity className="w-5 h-5" />

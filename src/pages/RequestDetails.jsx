@@ -127,6 +127,9 @@ export default function RequestDetails() {
                                 <p className="text-sm text-gray-600">Phone</p>
                                 <p className="font-medium">{customer.phone}</p>
                             </div>
+                            <Link to={`/users/${customer.id}`}>
+                                <button className="btn">View Customer</button>
+                            </Link>
                         </div>
                     </div>
                     {/* Request details */}
