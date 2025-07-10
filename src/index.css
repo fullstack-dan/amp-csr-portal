@@ -1,7 +1,7 @@
-:root,
+/* :root,
 * {
     font-size: 14px;
-}
+} */
 
 @import "tailwindcss";
 @plugin "daisyui" {

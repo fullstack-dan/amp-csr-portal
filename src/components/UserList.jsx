@@ -1,6 +1,7 @@
 import { useState, useMemo, useEffect } from "react";
 import Fuse from "fuse.js";
 import { Link, useLocation } from "react-router";
+import { Plus, Minus } from "lucide-react";
 
 export default function UserList({
     users,
@@ -43,7 +44,11 @@ export default function UserList({
                         className="btn btn-sm md:hidden"
                         onClick={() => setIsOpen(!isOpen)}
                     >
-                        {isOpen ? "Hide" : "Show"}
+                        {isOpen ? (
+                            <Minus className="h-4 w-4" />
+                        ) : (
+                            <Plus className="h-4 w-4" />
+                        )}
                     </button>
                 </div>
             )}

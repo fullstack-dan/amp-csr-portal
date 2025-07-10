@@ -93,7 +93,7 @@ export default function DashboardRequests() {
     return (
         <div className="flex flex-col items-center overflow-hidden h-full  ">
             {/* Filter bar */}
-            <div className="border-b w-full bg-white border-gray-200 p-4 flex flex-col md:flex-row gap-2 md:items-center shadow-xs">
+            <div className="border-b w-full bg-white border-gray-200 p-6 flex flex-col md:flex-row gap-2 md:items-center shadow-xs">
                 <span className="font-medium">Filter by status:</span>
                 <div className="flex gap-2">
                     <button

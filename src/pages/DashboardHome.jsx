@@ -62,27 +62,32 @@ export default function DashboardHome() {
     };
 
     return (
-        <div className="grid grid-cols-1 h-full w-full md:grid-cols-2 p-6 ">
-            {/* Requests section */}
-            <div className="p-6">
-                <RequestsList
-                    requests={pendingRequests}
-                    loading={reqsLoading}
-                    title="Pending Requests"
-                    className="bg-white rounded-lg shadow-sm p-6"
-                    onSearch={null} // No search in dashboard view
-                />
+        <>
+            <div className="bg-white flex items-center p-6 shadow-sm">
+                <h1 className="text-2xl font-light">Good morning, User!</h1>
             </div>
+            <div className="grid grid-cols-1 h-full w-full md:grid-cols-2 p-6 ">
+                {/* Requests section */}
+                <div className="p-6">
+                    <RequestsList
+                        requests={pendingRequests}
+                        loading={reqsLoading}
+                        title="Pending Requests"
+                        className="bg-white rounded-lg shadow-sm p-6"
+                        onSearch={null} // No search in dashboard view
+                    />
+                </div>
 
-            {/* Users section */}
-            <div className="p-6">
-                <UserList
-                    users={users}
-                    loading={usersLoading}
-                    onSearch={handleUserSearch}
-                    className="bg-white rounded-lg shadow-sm p-6"
-                />
+                {/* Users section */}
+                <div className="p-6">
+                    <UserList
+                        users={users}
+                        loading={usersLoading}
+                        onSearch={handleUserSearch}
+                        className="bg-white rounded-lg shadow-sm p-6"
+                    />
+                </div>
             </div>
-        </div>
+        </>
     );
 }
