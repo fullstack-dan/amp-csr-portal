@@ -1,7 +1,7 @@
 import CSRRequest, {
     CSRRequestType,
     CSRRequestStatus,
-} from "../models/CSRRequest";
+} from "../models/CSRRequest.ts";
 
 export const exampleCsrRequests: CSRRequest[] = [
     {

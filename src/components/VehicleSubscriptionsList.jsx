@@ -1,3 +1,5 @@
+import { Link } from "react-router";
+
 export default function VehicleSubscriptionsList({ subscriptions }) {
     if (!subscriptions || subscriptions.length === 0) {
         return (
@@ -21,6 +23,7 @@ export default function VehicleSubscriptionsList({ subscriptions }) {
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                             Status
                         </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"></th>
                     </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
@@ -47,6 +50,13 @@ export default function VehicleSubscriptionsList({ subscriptions }) {
                             >
                                 {subscription.status.charAt(0).toUpperCase() +
                                     subscription.status.slice(1)}
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                                <Link to={`/subscriptions/${subscription.id}`}>
+                                    <button className="btn">
+                                        View Details
+                                    </button>
+                                </Link>
                             </td>
                         </tr>
                     ))}

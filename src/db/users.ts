@@ -1,4 +1,4 @@
-import { User, Customer } from "../models/User";
+import { User, Customer } from "../models/User.ts";
 
 export const customers: Customer[] = [
     {

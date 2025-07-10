@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router";
-import { mockApi as API } from "../api/mockAPI";
+import { supabaseAPI as API } from "../api/supabaseAPI";
 import { CSRRequestStatus } from "../models/CSRRequest";
 import CSRRequestActionModal from "../components/CSRRequestActionModal";
 import { Mail, Phone, Eye } from "lucide-react";
@@ -42,15 +42,15 @@ export default function RequestDetails() {
         }
     };
 
-    const onModalClose = (modifiedReq = null) => {
+    const onModalClose = async (modifiedReq = null) => {
         document.getElementById("csrreqaction_modal").close();
         setLoading(true);
         if (modifiedReq) {
-            setRequest((prev) => ({
-                ...prev,
-                ...modifiedReq,
-                updatedAt: new Date().toISOString(),
-            }));
+            await API.updateRequest(modifiedReq);
+            const newRequest = await API.getRequestById(requestId);
+            setRequest(newRequest);
+            const customer = await API.getCustomerById(newRequest.customerId);
+            setCustomer(customer);
         }
         setLoading(false);
     };

@@ -5,7 +5,7 @@ import VehicleSubscription, {
     BillingFrequency,
     CarWashLocation,
     PaymentMethod,
-} from "../models/VehicleSubscription";
+} from "../models/VehicleSubscription.ts";
 
 // Shared car wash locations
 const carWashLocations: CarWashLocation[] = [

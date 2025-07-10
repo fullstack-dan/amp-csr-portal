@@ -1,6 +1,6 @@
 // DashboardUsers.jsx
 import React, { useEffect, useState } from "react";
-import { mockApi as API } from "../api/mockAPI";
+import { supabaseAPI as API } from "../api/supabaseAPI";
 import UserList from "../components/UserList";
 
 export default function DashboardUsers() {

@@ -19,3 +19,5 @@ I started with creating some data structures and a mock API to simulate the back
 ### Tuesday
 
 Today I focused on the U in CRUD. I added pages for viewing individual users and request details. I then implemented in place editing for the users and wrote a modal for updating and taking action on csr requests. I also added a loading state for the user search and request details. The user profile page is now fully functional, allowing CSRs to view and edit customer information and CSR requests. Next, I'll focus on adding purchase history and vehicle subscriptions to customer information, as well as going through my code and clearing up inconsitencies (like users vs customers).
+
+I had a little extra time Tuesday night (caffeine induced insomnia), so I went ahead and wrote a model and generated some example data for vehicle subscriptions. I added that view to the user details page, as well as added a panel for quickly seeing a user's currently open requests. At this point, I had the thought of changing CSR "requests" to CSR "tickets", but I've already migrated and I'm in far too deep at this point.

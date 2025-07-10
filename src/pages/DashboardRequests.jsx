@@ -1,6 +1,6 @@
 // pages/DashboardRequests.jsx
 import React, { useEffect, useState } from "react";
-import { mockApi as API } from "../api/mockAPI";
+import { supabaseAPI as API } from "../api/supabaseAPI";
 import RequestsList from "../components/RequestsList";
 import { CSRRequestStatus } from "../models/CSRRequest";
 

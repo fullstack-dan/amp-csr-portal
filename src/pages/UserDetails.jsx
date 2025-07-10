@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router";
-import { mockApi as API } from "../api/mockAPI";
+import { supabaseAPI as API } from "../api/supabaseAPI";
 import VehicleSubscriptionsList from "../components/VehicleSubscriptionsList";
 import {
     Mail,
@@ -115,7 +115,6 @@ export default function UserDetails() {
         setLoading(true);
         try {
             const data = await API.getCustomerWithSubscriptions(customerId);
-            console.log("Fetched customer data:", data);
             const customerData = data.customer;
             setCustomer(customerData);
 
@@ -166,16 +165,52 @@ export default function UserDetails() {
                 return;
             }
 
-            setCustomer({
-                ...customer,
-                ...formData,
-                address: {
+            console.log(formData);
+
+            const updatedCustomer = await API.updateCustomerDetails(
+                customer.id,
+                {
+                    first_name: formData.firstName,
+                    last_name: formData.lastName,
+                    email: formData.email,
+                    phone: formData.phone,
+                    profilePicture: formData.profilePicture,
+                },
+                {
                     street: formData.street,
                     city: formData.city,
                     state: formData.state,
-                    zipCode: formData.zipCode,
+                    zip_code: formData.zipCode,
+                }
+            );
+
+            if (!updatedCustomer) {
+                setInfo("Failed to save changes. Please try again.");
+                setInfoColor("bg-red-500");
+                setTimeout(() => {
+                    setInfo("Editing customer information");
+                    setInfoColor("bg-blue-500");
+                }, 3000);
+                return;
+            }
+
+            const updatedCustomerObj = {
+                ...updatedCustomer,
+                firstName: updatedCustomer.first_name,
+                lastName: updatedCustomer.last_name,
+                profilePicture: updatedCustomer.profile_picture,
+                createdAt: updatedCustomer.created_at,
+                address: {
+                    street: updatedCustomer.address.street,
+                    city: updatedCustomer.address.city,
+                    state: updatedCustomer.address.state,
+                    zipCode: updatedCustomer.address.zip_code,
                 },
-            });
+            };
+
+            setCustomer(updatedCustomerObj);
+            setInfo("Changes saved successfully.");
+            setInfoColor("bg-green-500");
 
             setEditing(false);
             setHasChanges(false);
@@ -311,7 +346,7 @@ export default function UserDetails() {
                 </div>
             </div>
 
-            <div className="flex h-full *:h-full">
+            <div className="flex h-full *:h-full overflow-hidden">
                 {/* Customer details section */}
                 <div className="flex-1 overflow-y-auto py-6">
                     <div className="max-w-2xl px-4">
@@ -507,9 +542,7 @@ export default function UserDetails() {
                 </div>
                 {/* Vehicle subscriptions section */}
                 <div className="flex-1 overflow-y-auto border-l border-gray-200">
-                    <h2 className="text-xl font-semibold p-6 mb-4">
-                        Subscriptions
-                    </h2>
+                    <h2 className="text-xl font-semibold p-6">Subscriptions</h2>
                     <VehicleSubscriptionsList subscriptions={subscriptions} />
                 </div>
             </div>
