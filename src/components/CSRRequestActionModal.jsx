@@ -1,10 +1,13 @@
-import React, { useState } from "react";
+import { useState } from "react";
 
+/**
+ * Allows CSR agents to take actions on requests
+ */
 export default function CSRRequestActionModal({ request, onClose }) {
     const [actionTaken, setActionTaken] = useState("");
     const [status, setStatus] = useState(request ? request.status : "pending");
     if (!request) {
-        return null; // or handle loading state
+        return null; // TODO: Handle case where request is not provided
     }
 
     const getStatusColor = (status) => {

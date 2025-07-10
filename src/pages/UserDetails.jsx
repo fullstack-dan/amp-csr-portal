@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router";
 import { supabaseAPI as API } from "../api/supabaseAPI";
 import VehicleSubscriptionsList from "../components/VehicleSubscriptionsList";
@@ -13,6 +13,23 @@ import {
     FileText,
     Activity,
 } from "lucide-react";
+import {
+    DetailsViewLayout,
+    DetailsHeader,
+    HeaderContent,
+    DetailsTabs,
+    DetailsContent,
+    DetailsGrid,
+    DetailsCard,
+    InfoRow,
+    InfoRowWithIcon,
+    EditModeBanner,
+    DetailsList,
+    DetailsListItem,
+    StatusBadge,
+    EmptyState,
+} from "../components/DetailsViewLayout";
+import { formatPhoneNumber } from "../utils/formatting";
 
 function UserInfoDisplay({ customer }) {
     return (
@@ -28,6 +45,7 @@ function UserInfoDisplay({ customer }) {
                     day: "numeric",
                 })}
             </p>
+            <p className="text-sm text-gray-500">Customer ID: {customer?.id}</p>
         </>
     );
 }
@@ -63,6 +81,14 @@ function UserInfoEdit({ formData, onChange }) {
     );
 }
 
+/**
+ * Detailed view component for user information. This LOOKS big but
+ * it's because I was adamant on using the ternary operator for
+ * conditional rendering when editing customer information.
+ *
+ * If I have enough time I might refactor, but it does now use the details view
+ * layout
+ */
 export default function UserDetails() {
     const { id } = useParams();
     const [customer, setCustomer] = useState(null);
@@ -234,90 +260,35 @@ export default function UserDetails() {
         setHasChanges(false);
     };
 
-    const formatPhone = (phone) => {
-        return phone.replace(/(\d{3})(\d{3})(\d{4})/, "($1) $2-$3");
-    };
-
-    const getRequestStatusColor = (status) => {
-        switch (status) {
-            case "pending":
-                return "badge-warning";
-            case "completed":
-                return "badge-success";
-            case "rejected":
-                return "badge-error";
-            default:
-                return "badge-ghost";
-        }
-    };
-
-    if (loading) {
-        return (
-            <div className="flex items-center justify-center h-full">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500" />
-            </div>
-        );
-    }
-
-    if (!customer) {
-        return (
-            <div className="flex flex-col items-center justify-center h-full">
-                <User className="w-12 h-12 text-gray-400 mb-4" />
-                <p className="text-gray-500">Customer not found</p>
-                <Link to="/users" className="btn btn-primary mt-4">
-                    Back to Users
-                </Link>
-            </div>
-        );
-    }
+    const tabs = [
+        { id: "overview", label: "Overview" },
+        {
+            id: "subscriptions",
+            label: "Subscriptions",
+            count: subscriptions.length,
+        },
+        { id: "requests", label: "Requests", count: requests.length },
+    ];
 
     return (
-        <div className="h-full overflow-y-auto ">
-            {/* Edit Mode Banner */}
+        <DetailsViewLayout
+            loading={loading}
+            notFound={!customer}
+            notFoundMessage="Customer not found"
+            backLink="/users"
+        >
             {editing && (
-                <div
-                    className={`${infoColor} text-white text-center py-2 flex items-center justify-center gap-2`}
-                >
-                    <Edit2 className="w-4 h-4" />
-                    <span>{info}</span>
-                </div>
+                <EditModeBanner message={info} icon={Edit2} color={infoColor} />
             )}
 
-            {/* Header */}
-            <div className="bg-white border-b border-gray-200 shadow-xs">
-                <div className="p-6">
-                    <div className="flex items-center justify-between mb-4">
-                        <div className="flex items-center gap-4">
-                            {customer.profilePicture ? (
-                                <img
-                                    src={customer.profilePicture}
-                                    alt="Profile"
-                                    className="w-20 h-20 rounded-full"
-                                />
-                            ) : (
-                                <div className="w-20 h-20 rounded-full bg-gray-200 flex items-center justify-center">
-                                    <User className="w-10 h-10 text-gray-500" />
-                                </div>
-                            )}
-                            <div>
-                                {editing ? (
-                                    <UserInfoEdit
-                                        formData={formData}
-                                        onChange={handleInputChange}
-                                    />
-                                ) : (
-                                    <UserInfoDisplay customer={customer} />
-                                )}
-                                <p className="text-sm text-gray-500 mt-1">
-                                    Customer ID: {customer.id}
-                                </p>
-                            </div>
-                        </div>
-                        <div className="flex gap-2">
+            <DetailsHeader>
+                <HeaderContent
+                    actions={
+                        <>
                             {!editing && (
                                 <>
                                     <a
-                                        href={`mailto:${customer.email}`}
+                                        href={`mailto:${customer?.email}`}
                                         className="btn btn-outline btn-sm"
                                         title="Send email"
                                     >
@@ -325,7 +296,7 @@ export default function UserDetails() {
                                         Email
                                     </a>
                                     <a
-                                        href={`tel:${customer.phone}`}
+                                        href={`tel:${customer?.phone}`}
                                         className="btn btn-outline btn-sm"
                                         title="Call customer"
                                     >
@@ -365,51 +336,45 @@ export default function UserDetails() {
                                     Edit Profile
                                 </button>
                             )}
+                        </>
+                    }
+                >
+                    <div className="flex items-center gap-4">
+                        {customer?.profilePicture ? (
+                            <img
+                                src={customer.profilePicture}
+                                alt="Profile"
+                                className="w-20 h-20 rounded-full"
+                            />
+                        ) : (
+                            <div className="w-20 h-20 rounded-full bg-gray-200 flex items-center justify-center">
+                                <User className="w-10 h-10 text-gray-500" />
+                            </div>
+                        )}
+                        <div>
+                            {editing ? (
+                                <UserInfoEdit
+                                    formData={formData}
+                                    onChange={handleInputChange}
+                                />
+                            ) : (
+                                <UserInfoDisplay customer={customer} />
+                            )}
                         </div>
                     </div>
+                </HeaderContent>
+                <DetailsTabs
+                    tabs={tabs}
+                    activeTab={activeTab}
+                    onTabChange={setActiveTab}
+                />
+            </DetailsHeader>
 
-                    {/* Tabs */}
-                    <div className="tabs tabs-boxed">
-                        <button
-                            className={`tab ${
-                                activeTab === "overview" ? "tab-active" : ""
-                            }`}
-                            onClick={() => setActiveTab("overview")}
-                        >
-                            Overview
-                        </button>
-                        <button
-                            className={`tab ${
-                                activeTab === "subscriptions"
-                                    ? "tab-active"
-                                    : ""
-                            }`}
-                            onClick={() => setActiveTab("subscriptions")}
-                        >
-                            Subscriptions ({subscriptions.length})
-                        </button>
-                        <button
-                            className={`tab ${
-                                activeTab === "requests" ? "tab-active" : ""
-                            }`}
-                            onClick={() => setActiveTab("requests")}
-                        >
-                            Requests ({requests.length})
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            {/* Content */}
-            <div className="p-6">
+            <DetailsContent>
                 {activeTab === "overview" && (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {/* Contact Information */}
-                        <div className="bg-white rounded-lg shadow-sm p-6">
-                            <h3 className="font-semibold text-lg mb-4 flex items-center gap-2">
-                                <User className="w-5 h-5" />
-                                Contact Information
-                            </h3>
+                    <DetailsGrid cols={3}>
+                        {/* Contact information */}
+                        <DetailsCard title="Contact Information" icon={User}>
                             {editing ? (
                                 <div className="space-y-3">
                                     <div>
@@ -435,43 +400,30 @@ export default function UserDetails() {
                                             value={formData.email}
                                             onChange={handleInputChange}
                                             className="input input-bordered w-full mt-1"
-                                            placeholder="Phone number"
+                                            placeholder="Email address"
                                         />
                                     </div>
                                 </div>
                             ) : (
                                 <div className="space-y-3">
-                                    <div className="flex items-center gap-3">
-                                        <Phone className="w-4 h-4 text-gray-400" />
-                                        <div>
-                                            <p className="text-sm text-gray-600">
-                                                Phone
-                                            </p>
-                                            <p className="font-medium">
-                                                {formatPhone(customer.phone)}
-                                            </p>
-                                        </div>
-                                    </div>
-                                    <div className="flex items-center gap-3">
-                                        <Mail className="w-4 h-4 text-gray-400" />
-                                        <div>
-                                            <p className="text-sm text-gray-600">
-                                                Email
-                                            </p>
-                                            <p className="font-medium">
-                                                {customer.email}
-                                            </p>
-                                        </div>
-                                    </div>
+                                    <InfoRowWithIcon
+                                        icon={Phone}
+                                        label="Phone"
+                                        value={formatPhoneNumber(
+                                            customer?.phone
+                                        )}
+                                    />
+                                    <InfoRowWithIcon
+                                        icon={Mail}
+                                        label="Email"
+                                        value={customer?.email}
+                                    />
                                 </div>
                             )}
-                        </div>
+                        </DetailsCard>
+
                         {/* Address */}
-                        <div className="bg-white rounded-lg shadow-sm p-6">
-                            <h3 className="font-semibold text-lg mb-4 flex items-center gap-2">
-                                <MapPin className="w-5 h-5" />
-                                Address
-                            </h3>
+                        <DetailsCard title="Address" icon={MapPin}>
                             {editing ? (
                                 <div className="space-y-3">
                                     <input
@@ -512,130 +464,95 @@ export default function UserDetails() {
                                 </div>
                             ) : (
                                 <div className="space-y-1">
-                                    <p>{customer.address.street}</p>
+                                    <p>{customer?.address.street}</p>
                                     <p>
-                                        {customer.address.city},{" "}
-                                        {customer.address.state}
+                                        {customer?.address.city},{" "}
+                                        {customer?.address.state}
                                     </p>
-                                    <p>{customer.address.zipCode}</p>
+                                    <p>{customer?.address.zipCode}</p>
                                 </div>
                             )}
-                        </div>
-                        {/* Account Status //TODO: change this to purchase history */}
-                        <div className="bg-white rounded-lg shadow-sm p-6">
-                            <h3 className="font-semibold text-lg mb-4 flex items-center gap-2">
-                                <Activity className="w-5 h-5" />
-                                Account Status
-                            </h3>
+                        </DetailsCard>
+
+                        {/* Account status */}
+                        <DetailsCard title="Account Status" icon={Activity}>
                             <div className="space-y-3">
-                                <div>
-                                    <p className="text-sm text-gray-600">
-                                        Member Since
-                                    </p>
-                                    <p className="font-medium">
-                                        {new Date(
-                                            customer.createdAt
-                                        ).toLocaleDateString("en-US", {
-                                            year: "numeric",
-                                            month: "long",
-                                            day: "numeric",
-                                        })}
-                                    </p>
-                                </div>
+                                <InfoRow
+                                    label="Member Since"
+                                    value={new Date(
+                                        customer?.createdAt
+                                    ).toLocaleDateString("en-US", {
+                                        year: "numeric",
+                                        month: "long",
+                                        day: "numeric",
+                                    })}
+                                />
                                 <div>
                                     <p className="text-sm text-gray-600">
                                         Status
                                     </p>
-                                    <span className="badge badge-success">
-                                        Active
-                                    </span>
+                                    <StatusBadge status="active" />
                                 </div>
-                                <div>
-                                    <p className="text-sm text-gray-600">
-                                        Role
-                                    </p>
-                                    <p className="font-medium capitalize">
-                                        {customer.role}
-                                    </p>
-                                </div>
+                                <InfoRow label="Role" value={customer?.role} />
                             </div>
-                        </div>
-                    </div>
+                        </DetailsCard>
+                    </DetailsGrid>
                 )}
 
                 {activeTab === "subscriptions" && (
-                    <div className="bg-white rounded-lg shadow-sm p-6">
-                        <h3 className="font-semibold text-lg mb-4">
-                            Vehicle Subscriptions
-                        </h3>
+                    <DetailsCard title="Vehicle Subscriptions">
                         <VehicleSubscriptionsList
                             subscriptions={subscriptions}
                         />
-                    </div>
+                    </DetailsCard>
                 )}
 
                 {activeTab === "requests" && (
-                    <div className="bg-white rounded-lg shadow-sm">
-                        <div className="p-6">
-                            <h3 className="font-semibold text-lg mb-4">
-                                Customer Requests
-                            </h3>
-                            {requests.length > 0 ? (
-                                <div className="space-y-4">
-                                    {requests.map((request) => (
-                                        <div
-                                            key={request.id}
-                                            className="border rounded-lg p-4 hover: transition-colors"
-                                        >
-                                            <div className="flex justify-between items-start">
-                                                <div className="flex-1">
-                                                    <div className="flex items-center gap-2 mb-1">
-                                                        <h4 className="font-semibold">
-                                                            {
-                                                                request.requestType
-                                                            }
-                                                        </h4>
-                                                        <span
-                                                            className={`badge badge-sm ${getRequestStatusColor(
-                                                                request.status
-                                                            )}`}
-                                                        >
-                                                            {request.status}
-                                                        </span>
-                                                    </div>
-                                                    <p className="text-sm text-gray-600 mb-2">
-                                                        "{request.details}"
-                                                    </p>
-                                                    <p className="text-xs text-gray-500">
-                                                        Last Updated:{" "}
-                                                        {new Date(
-                                                            request.updatedAt
-                                                        ).toLocaleString()}
-                                                    </p>
+                    <DetailsCard title="Customer Requests">
+                        {requests.length > 0 ? (
+                            <DetailsList>
+                                {requests.map((request) => (
+                                    <DetailsListItem key={request.id}>
+                                        <div className="flex justify-between items-start">
+                                            <div className="flex-1">
+                                                <div className="flex items-center gap-2 mb-1">
+                                                    <h4 className="font-semibold">
+                                                        {request.requestType}
+                                                    </h4>
+                                                    <StatusBadge
+                                                        status={request.status}
+                                                    />
                                                 </div>
-                                                <Link
-                                                    to={`/requests/${request.id}`}
-                                                >
-                                                    <button className="btn btn-sm">
-                                                        View
-                                                    </button>
-                                                </Link>
+                                                <p className="text-sm text-gray-600 mb-2">
+                                                    "{request.details}"
+                                                </p>
+                                                <p className="text-xs text-gray-500">
+                                                    Last Updated:{" "}
+                                                    {new Date(
+                                                        request.updatedAt
+                                                    ).toLocaleString()}
+                                                </p>
                                             </div>
+                                            <Link
+                                                to={`/requests/${request.id}`}
+                                            >
+                                                <button className="btn btn-sm">
+                                                    View
+                                                </button>
+                                            </Link>
                                         </div>
-                                    ))}
-                                </div>
-                            ) : (
-                                <div className="text-center py-8">
-                                    <FileText className="w-12 h-12 text-gray-300 mx-auto mb-2" />
-                                    <p className="text-gray-500">
-                                        No requests found
-                                    </p>
-                                </div>
-                            )}
-                        </div>
-                    </div>
+                                    </DetailsListItem>
+                                ))}
+                            </DetailsList>
+                        ) : (
+                            <EmptyState
+                                icon={FileText}
+                                message="No requests found"
+                            />
+                        )}
+                    </DetailsCard>
                 )}
-            </div>
-        </div>
+            </DetailsContent>
+        </DetailsViewLayout>
     );
 }

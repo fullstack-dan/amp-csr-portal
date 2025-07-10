@@ -1,9 +1,11 @@
-// pages/DashboardRequests.jsx
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { supabaseAPI as API } from "../api/supabaseAPI";
 import RequestsList from "../components/RequestsList";
 import { CSRRequestStatus } from "../models/CSRRequest";
 
+/**
+ * DashboardRequests component displays a list of CSR requests with filtering and search functionality
+ */
 export default function DashboardRequests() {
     const [requests, setRequests] = useState([]);
     const [loading, setLoading] = useState(true);
