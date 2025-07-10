@@ -28,6 +28,7 @@ import {
     DetailsCard,
     InfoRow,
 } from "../components/DetailsViewLayout";
+import ModifySubscriptionModal from "../components/ModifySubscriptionModal";
 
 /**
  * Detailed view component for subscription information,
@@ -40,6 +41,7 @@ export default function SubscriptionDetails() {
     const [loading, setLoading] = useState(true);
     const [activeTab, setActiveTab] = useState("overview");
     const [addingVehicle, setAddingVehicle] = useState(false);
+    const [editing, setEditing] = useState(false);
 
     useEffect(() => {
         if (!subscriptionId) {
@@ -54,6 +56,8 @@ export default function SubscriptionDetails() {
         try {
             const data = await API.getSubscriptionById(subscriptionId);
             setSubscription(data);
+
+            console.log(data);
 
             if (data?.customerId) {
                 const customerData = await API.getCustomerById(data.customerId);
@@ -77,6 +81,29 @@ export default function SubscriptionDetails() {
         } catch (error) {
             console.error("Error adding vehicle:", error); //TODO: add error handling
         }
+    };
+
+    const onModalClose = async (modfiedSub = null) => {
+        document.getElementById("modifysub_modal").close();
+        setLoading(true);
+        if (modfiedSub) {
+            await API.updateSubscription(modfiedSub);
+            const updatedSubscription = await API.getSubscriptionById(
+                subscriptionId
+            );
+            setSubscription(updatedSubscription);
+            if (updatedSubscription.customerId) {
+                const customerData = await API.getCustomerById(
+                    updatedSubscription.customerId
+                );
+                setCustomer(customerData);
+            }
+        }
+        setLoading(false);
+    };
+
+    const handleModifySubscription = () => {
+        document.getElementById("modifysub_modal").showModal();
     };
 
     const getPaymentMethodDisplay = (paymentMethod) => {
@@ -122,6 +149,10 @@ export default function SubscriptionDetails() {
             notFoundMessage="Subscription not found"
             backLink="/users"
         >
+            <ModifySubscriptionModal
+                subscription={subscription}
+                onClose={onModalClose}
+            />
             <DetailsHeader>
                 <HeaderContent
                     title={`${subscription?.planType} Plan`}
@@ -136,11 +167,11 @@ export default function SubscriptionDetails() {
                     }`}
                     actions={
                         <>
-                            <button className="btn btn-outline">
-                                Edit Subscription
-                            </button>
-                            <button className="btn btn-primary">
-                                Manage Billing
+                            <button
+                                className="btn btn-primary"
+                                onClick={handleModifySubscription}
+                            >
+                                Manage Subscription
                             </button>
                         </>
                     }

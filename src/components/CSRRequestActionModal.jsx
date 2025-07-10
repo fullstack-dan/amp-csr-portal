@@ -6,9 +6,6 @@ import { useState } from "react";
 export default function CSRRequestActionModal({ request, onClose }) {
     const [actionTaken, setActionTaken] = useState("");
     const [status, setStatus] = useState(request ? request.status : "pending");
-    if (!request) {
-        return null; // TODO: Handle case where request is not provided
-    }
 
     const getStatusColor = (status) => {
         switch (status) {
@@ -48,7 +45,7 @@ export default function CSRRequestActionModal({ request, onClose }) {
 
     return (
         <dialog id="csrreqaction_modal" className="modal">
-            <div className="modal-box w-11/12 max-w-5xl">
+            <div className="modal-box w-11/12 max-w-3xl">
                 <div>
                     <h2 className="text-xl font-bold">
                         {request.requestType}

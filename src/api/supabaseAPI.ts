@@ -555,6 +555,95 @@ export const supabaseAPI = {
         };
     },
 
+    async updateSubscription(updatedSub: VehicleSubscription): Promise<{
+        success: boolean;
+        error?: string;
+        data?: VehicleSubscription;
+    }> {
+        const { id, planType, status, planFeatures, billingInfo } = updatedSub;
+
+        // 1. Update vehicle_subscriptions
+        const { error: subError } = await supabase
+            .from("vehicle_subscriptions")
+            .update({
+                plan_type: planType,
+                status: status,
+            })
+            .eq("id", id);
+
+        if (subError) {
+            return {
+                success: false,
+                error: `Subscription update failed: ${subError.message}`,
+            };
+        }
+
+        // 2. Update subscription_plan_features
+        const { error: featureError } = await supabase
+            .from("subscription_plan_features")
+            .update({
+                max_vehicles: planFeatures.maxVehicles,
+                max_washes_per_month: planFeatures.maxWashesPerMonth,
+                detailing_included: planFeatures.detailingIncluded,
+            })
+            .eq("subscription_id", id);
+
+        if (featureError) {
+            return {
+                success: false,
+                error: `Plan features update failed: ${featureError.message}`,
+            };
+        }
+
+        // 3. Update billing_info
+        const { error: billingError } = await supabase
+            .from("billing_info")
+            .update({
+                amount: billingInfo.amount,
+            })
+            .eq("subscription_id", id);
+
+        if (billingError) {
+            return {
+                success: false,
+                error: `Billing update failed: ${billingError.message}`,
+            };
+        }
+
+        // 4. Fetch updated subscription with joins
+        const { data, error: fetchError } = await supabase
+            .from("vehicle_subscriptions")
+            .select(
+                `
+            *,
+            features:subscription_plan_features(*),
+            locations:subscription_locations(
+              location:car_wash_locations(*)
+            ),
+            vehicles(*),
+            billing:billing_info(
+              *,
+              payment_method:payment_methods(*)
+            ),
+            discount:billing_discounts(*)
+          `
+            )
+            .eq("id", id)
+            .single();
+
+        if (fetchError) {
+            return {
+                success: false,
+                error: `Fetch updated subscription failed: ${fetchError.message}`,
+            };
+        }
+
+        return {
+            success: true,
+            data: data as VehicleSubscription,
+        };
+    },
+
     // Additional subscription methods
     async updateSubscriptionStatus(
         subscriptionId: string,
