@@ -609,9 +609,20 @@ export const supabaseAPI = {
             throw new Error("Vehicle already exists in system");
         }
 
+        //get the last vehicle id added to db
+        const { data: lastVehicle } = await supabase
+            .from("vehicles")
+            .select("id")
+            .order("id", { ascending: false })
+            .limit(1)
+            .single();
+
+        //ids are in form veh-###... add 1 and create the new id
+        const newId = `veh-${parseInt(lastVehicle.id.split("-")[1]) + 1}`;
+
         // Add vehicle
         const { error } = await supabase.from("vehicles").insert({
-            id: vehicle.id,
+            id: newId,
             subscription_id: subscriptionId,
             vin: vehicle.vin,
             make: vehicle.make,

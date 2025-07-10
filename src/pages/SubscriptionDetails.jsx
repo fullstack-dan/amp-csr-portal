@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router";
 import { supabaseAPI as API } from "../api/supabaseAPI";
+import AddVehicleToSubCard from "../components/AddVehicleToSubCard";
 import {
     Mail,
     Phone,
@@ -26,6 +27,7 @@ export default function SubscriptionDetails() {
     const [customer, setCustomer] = useState(null);
     const [loading, setLoading] = useState(true);
     const [activeTab, setActiveTab] = useState("overview");
+    const [addingVehicle, setAddingVehicle] = useState(false);
 
     useEffect(() => {
         if (!subscriptionId) {
@@ -49,6 +51,19 @@ export default function SubscriptionDetails() {
             console.error("Error fetching subscription:", error);
         } finally {
             setLoading(false);
+        }
+    };
+
+    const addVehicleToSubscription = async (vehicleData) => {
+        try {
+            const updatedSubscription = await API.addVehicleToSubscription(
+                subscriptionId,
+                vehicleData
+            );
+            setSubscription(updatedSubscription);
+            setAddingVehicle(false);
+        } catch (error) {
+            console.error("Error adding vehicle:", error);
         }
     };
 
@@ -416,10 +431,26 @@ export default function SubscriptionDetails() {
                                 ))}
                                 {subscription.vehicles.length <
                                     subscription.planFeatures.maxVehicles && (
-                                    <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 flex items-center justify-center">
-                                        <button className="btn btn-outline btn-sm">
-                                            Add Vehicle
-                                        </button>
+                                    <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 w-full flex items-center justify-center">
+                                        {addingVehicle ? (
+                                            <AddVehicleToSubCard
+                                                cancelForm={() =>
+                                                    setAddingVehicle(false)
+                                                }
+                                                onSubmit={
+                                                    addVehicleToSubscription
+                                                }
+                                            />
+                                        ) : (
+                                            <button
+                                                className="btn btn-outline"
+                                                onClick={() =>
+                                                    setAddingVehicle(true)
+                                                }
+                                            >
+                                                Add Vehicle
+                                            </button>
+                                        )}
                                     </div>
                                 )}
                             </div>
