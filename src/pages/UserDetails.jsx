@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router";
 import { supabaseAPI as API } from "../api/supabaseAPI";
 import VehicleSubscriptionsList from "../components/VehicleSubscriptionsList";
+import AddNewSubscriptionModal from "../components/AddNewSubscriptionModal";
 import {
     Mail,
     Phone,
@@ -212,6 +213,19 @@ export default function UserDetails() {
         } catch (error) {
             console.error("Failed to save changes:", error);
         }
+    };
+
+    const handleAddSubscription = (newSubscription) => {
+        if (!newSubscription) {
+            return;
+        }
+        setSubscriptions((prev) => [...prev, newSubscription]);
+        setInfo("New subscription added successfully.");
+        setInfoColor("bg-green-500");
+        setTimeout(() => {
+            setInfo("Editing customer information");
+            setInfoColor("bg-blue-500");
+        }, 3000);
     };
 
     const validateFormData = () => {
@@ -504,6 +518,20 @@ export default function UserDetails() {
                         <VehicleSubscriptionsList
                             subscriptions={subscriptions}
                         />
+                        <AddNewSubscriptionModal
+                            customerId={customer?.id}
+                            onClose={handleAddSubscription}
+                        />
+                        <button
+                            className="btn btn-primary"
+                            onClick={() => {
+                                document
+                                    .getElementById("addnewsub_modal")
+                                    ?.showModal();
+                            }}
+                        >
+                            Add New Subscription
+                        </button>
                     </DetailsCard>
                 )}
 

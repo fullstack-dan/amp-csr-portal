@@ -759,4 +759,182 @@ export const supabaseAPI = {
 
         return this.getSubscriptionById(subscriptionId);
     },
+
+    // Add these functions to your supabaseAPI.ts file
+
+    // Get all locations
+    async getAllLocations(): Promise<CarWashLocation[]> {
+        const { data, error } = await supabase
+            .from("car_wash_locations")
+            .select("*")
+            .order("name");
+
+        if (error) throw error;
+
+        return data.map((location) => ({
+            id: location.id,
+            name: location.name,
+            address: location.address,
+            city: location.city,
+            state: location.state,
+            zip: location.zip,
+            phone: location.phone,
+            email: location.email,
+            website: location.website,
+        }));
+    },
+
+    // Create a new subscription
+    async createSubscription(subscriptionData: {
+        customerId: string;
+        planType: SubscriptionPlanType;
+        planFeatures: {
+            maxVehicles: number;
+            maxWashesPerMonth: number;
+            detailingIncluded: boolean;
+        };
+        status: SubscriptionStatus;
+        startDate: string;
+        selectedLocationIds: string[];
+        billingInfo: {
+            amount: number;
+            currency: string;
+            frequency: BillingFrequency;
+            nextBillingDate: string;
+            paymentMethod: {
+                type: PaymentType;
+                details: {
+                    cardBrand?: string;
+                    cardLast4?: string;
+                    paypalEmail?: string;
+                    bankAccountLast4?: string;
+                };
+            };
+            discount?: {
+                percentage?: number;
+                amount?: number;
+                reason: string;
+                validUntil?: string;
+            };
+        };
+    }): Promise<VehicleSubscription> {
+        try {
+            // Start a transaction
+            const subscriptionId = `sub-${Date.now()}-${Math.random()
+                .toString(36)
+                .substr(2, 9)}`;
+            const paymentMethodId = `pm-${Date.now()}-${Math.random()
+                .toString(36)
+                .substr(2, 9)}`;
+
+            // 1. Create payment method
+            const { error: pmError } = await supabase
+                .from("payment_methods")
+                .insert({
+                    id: paymentMethodId,
+                    type: subscriptionData.billingInfo.paymentMethod.type,
+                    card_brand:
+                        subscriptionData.billingInfo.paymentMethod.details
+                            .cardBrand || null,
+                    card_last4:
+                        subscriptionData.billingInfo.paymentMethod.details
+                            .cardLast4 || null,
+                    paypal_email:
+                        subscriptionData.billingInfo.paymentMethod.details
+                            .paypalEmail || null,
+                    bank_account_last4:
+                        subscriptionData.billingInfo.paymentMethod.details
+                            .bankAccountLast4 || null,
+                });
+
+            if (pmError) throw pmError;
+
+            // 2. Create the subscription
+            const { error: subError } = await supabase
+                .from("vehicle_subscriptions")
+                .insert({
+                    id: subscriptionId,
+                    customer_id: subscriptionData.customerId,
+                    plan_type: subscriptionData.planType,
+                    status: subscriptionData.status,
+                    start_date: subscriptionData.startDate,
+                    created_at: new Date().toISOString(),
+                    updated_at: new Date().toISOString(),
+                });
+
+            if (subError) throw subError;
+
+            // 3. Create plan features
+            const { error: featuresError } = await supabase
+                .from("subscription_plan_features")
+                .insert({
+                    subscription_id: subscriptionId,
+                    max_vehicles: subscriptionData.planFeatures.maxVehicles,
+                    max_washes_per_month:
+                        subscriptionData.planFeatures.maxWashesPerMonth,
+                    detailing_included:
+                        subscriptionData.planFeatures.detailingIncluded,
+                });
+
+            if (featuresError) throw featuresError;
+
+            // 4. Create billing info
+            const { error: billingError } = await supabase
+                .from("billing_info")
+                .insert({
+                    subscription_id: subscriptionId,
+                    amount: subscriptionData.billingInfo.amount,
+                    currency: subscriptionData.billingInfo.currency,
+                    frequency: subscriptionData.billingInfo.frequency,
+                    next_billing_date:
+                        subscriptionData.billingInfo.nextBillingDate,
+                    last_billing_date: null,
+                    payment_method_id: paymentMethodId,
+                });
+
+            if (billingError) throw billingError;
+
+            // 5. Add discount if provided
+            if (subscriptionData.billingInfo.discount) {
+                const { error: discountError } = await supabase
+                    .from("billing_discounts")
+                    .insert({
+                        subscription_id: subscriptionId,
+                        percentage:
+                            subscriptionData.billingInfo.discount.percentage ||
+                            null,
+                        amount:
+                            subscriptionData.billingInfo.discount.amount ||
+                            null,
+                        reason: subscriptionData.billingInfo.discount.reason,
+                        valid_until:
+                            subscriptionData.billingInfo.discount.validUntil ||
+                            null,
+                    });
+
+                if (discountError) throw discountError;
+            }
+
+            // 6. Add locations
+            if (subscriptionData.selectedLocationIds.length > 0) {
+                const locationInserts =
+                    subscriptionData.selectedLocationIds.map((locationId) => ({
+                        subscription_id: subscriptionId,
+                        location_id: locationId,
+                    }));
+
+                const { error: locError } = await supabase
+                    .from("subscription_locations")
+                    .insert(locationInserts);
+
+                if (locError) throw locError;
+            }
+
+            // 7. Fetch and return the complete subscription
+            return await this.getSubscriptionById(subscriptionId);
+        } catch (error) {
+            console.error("Error creating subscription:", error);
+            throw new Error(`Failed to create subscription: ${error.message}`);
+        }
+    },
 };
