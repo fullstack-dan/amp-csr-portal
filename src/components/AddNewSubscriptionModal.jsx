@@ -544,9 +544,9 @@ export default function AddNewSubscriptionModal({ customerId, onClose }) {
 
                     {hasDiscount && (
                         <div className="grid grid-cols-2 gap-4">
-                            <div className="form-control flex flex-col">
+                            <div className="form-control flex flex-col justify-end">
                                 <label className="label">
-                                    <span className="label-text">
+                                    <span className="label-text text-wrap">
                                         Discount Type
                                     </span>
                                 </label>
@@ -565,9 +565,9 @@ export default function AddNewSubscriptionModal({ customerId, onClose }) {
                             </div>
 
                             {discountType === "percentage" ? (
-                                <div className="form-control flex flex-col">
+                                <div className="form-control flex flex-col justify-end">
                                     <label className="label">
-                                        <span className="label-text">
+                                        <span className="label-text text-wrap">
                                             Discount Percentage
                                         </span>
                                     </label>
@@ -585,9 +585,9 @@ export default function AddNewSubscriptionModal({ customerId, onClose }) {
                                     />
                                 </div>
                             ) : (
-                                <div className="form-control flex flex-col">
+                                <div className="form-control flex flex-col justify-end">
                                     <label className="label">
-                                        <span className="label-text">
+                                        <span className="label-text text-wrap">
                                             Discount Amount (USD)
                                         </span>
                                     </label>

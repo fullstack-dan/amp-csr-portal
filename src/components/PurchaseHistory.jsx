@@ -162,7 +162,7 @@ export default function PurchaseHistory({ purchases }) {
 
             {/* Filter options */}
             <div className="flex justify-between items-center mb-4">
-                <div className="flex space-x-2">
+                <div className="flex flex-wrap gap-2">
                     <button
                         className={`px-4 py-2 rounded-md cursor-pointer ${
                             filterType === "all"

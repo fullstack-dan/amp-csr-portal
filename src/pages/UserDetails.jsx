@@ -318,9 +318,9 @@ export default function UserDetails() {
             <DetailsHeader>
                 <HeaderContent
                     actions={
-                        <>
+                        <div className="flex flex-wrap gap-2">
                             {!editing && (
-                                <>
+                                <div className="flex items-center gap-2">
                                     <a
                                         href={`mailto:${customer?.email}`}
                                         className="btn btn-outline btn-sm"
@@ -337,10 +337,10 @@ export default function UserDetails() {
                                         <Phone className="w-4 h-4" />
                                         Call
                                     </a>
-                                </>
+                                </div>
                             )}
                             {editing ? (
-                                <>
+                                <div className="flex flex-wrap items-center gap-2">
                                     <button
                                         className="btn btn-primary bg-blue-600 btn-sm flex items-center gap-2"
                                         onClick={handleSave}
@@ -356,7 +356,7 @@ export default function UserDetails() {
                                         <X className="w-4 h-4" />
                                         Cancel
                                     </button>
-                                </>
+                                </div>
                             ) : (
                                 <button
                                     className="btn btn-primary bg-blue-600 btn-sm flex items-center gap-2"
@@ -370,7 +370,7 @@ export default function UserDetails() {
                                     Edit Profile
                                 </button>
                             )}
-                        </>
+                        </div>
                     }
                 >
                     <div className="flex items-center gap-4">
@@ -573,9 +573,9 @@ export default function UserDetails() {
                             <DetailsList>
                                 {requests.map((request) => (
                                     <DetailsListItem key={request.id}>
-                                        <div className="flex justify-between items-start">
+                                        <div className="flex justify-between flex-wrap items-start">
                                             <div className="flex-1">
-                                                <div className="flex items-center gap-2 mb-1">
+                                                <div className="flex flex-wrap items-center gap-2 mb-1">
                                                     <h4 className="font-semibold">
                                                         {request.requestType}
                                                     </h4>

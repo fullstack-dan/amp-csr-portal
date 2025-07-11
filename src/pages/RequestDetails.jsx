@@ -138,12 +138,12 @@ export default function RequestDetails() {
 
                     {/* Request details */}
                     <DetailsCard title="Request Details" icon={Info}>
-                        <p className="text-gray-700">{request?.details}</p>
+                        <p className="text-gray-700">"{request?.details}"</p>
                     </DetailsCard>
 
                     {/* Request history */}
                     <DetailsCard title="Request History" icon={Clock}>
-                        <ul className="space-y-2 list-disc">
+                        <ul className="space-y-2">
                             {request?.history.map((entry, index) => (
                                 <li key={index} className="text-sm">
                                     <span className="font-medium">
