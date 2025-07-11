@@ -1,4 +1,19 @@
 /**
+ * Purchase interface representing a user's purchase history.
+ */
+export interface Purchase {
+    id: string;
+    userId: string;
+    vehicleId: string;
+    purchaseDate: string;
+    amount: number;
+    paymentMethod: string;
+    coveredBySubscription?: boolean;
+    createdAt?: string;
+    updatedAt?: string;
+}
+
+/**
  * Address interface representing a customer's address.
  */
 export interface Address {
@@ -22,6 +37,7 @@ export interface User {
     updatedAt: string;
     role: "admin" | "customer";
     password: string;
+    purchaseHistory: Purchase[];
 }
 
 /**

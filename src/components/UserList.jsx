@@ -13,6 +13,8 @@ export default function UserList({
     const location = useLocation();
     const [searchQuery, setSearchQuery] = useState("");
     const [isOpen, setIsOpen] = useState(false);
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 5;
 
     useEffect(() => {
         if (location.pathname !== "/") {
@@ -34,6 +36,19 @@ export default function UserList({
         if (!searchQuery.trim()) return users;
         return fuse.search(searchQuery).map((res) => res.item);
     }, [searchQuery, users, fuse]);
+
+    const paginatedUsers = useMemo(() => {
+        const startIndex = (currentPage - 1) * itemsPerPage;
+        return filteredUsers.slice(startIndex, startIndex + itemsPerPage);
+    }, [filteredUsers, currentPage]);
+
+    const totalPages = Math.ceil(filteredUsers.length / itemsPerPage);
+
+    const goToPage = (page) => {
+        if (page >= 1 && page <= totalPages) {
+            setCurrentPage(page);
+        }
+    };
 
     return (
         <div className={`flex flex-col w-full max-w-5xl ${className}`}>
@@ -95,7 +110,7 @@ export default function UserList({
                         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500" />
                     </div>
                 ) : filteredUsers.length !== 0 ? (
-                    filteredUsers.map((user) => (
+                    paginatedUsers.map((user) => (
                         <li
                             key={user.id}
                             className="flex items-center justify-between border-b border-gray-200 p-4 hover:bg-base-300 last:border-b-0 hover:cursor-pointer transition duration-200 ease-in-out"
@@ -120,6 +135,37 @@ export default function UserList({
                     <li className="py-4 px-4 text-center text-gray-500">
                         No users found.
                     </li>
+                )}
+                {totalPages > 1 && (
+                    <div className="flex justify-center items-center gap-2 mt-4">
+                        <button
+                            onClick={() => goToPage(currentPage - 1)}
+                            disabled={currentPage === 1}
+                            className="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300 disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
+                        >
+                            Previous
+                        </button>
+                        {Array.from({ length: totalPages }, (_, i) => (
+                            <button
+                                key={i}
+                                onClick={() => goToPage(i + 1)}
+                                className={`px-3 py-1 rounded cursor-pointer ${
+                                    currentPage === i + 1
+                                        ? "bg-blue-600 text-white"
+                                        : "bg-gray-100 hover:bg-gray-200"
+                                }`}
+                            >
+                                {i + 1}
+                            </button>
+                        ))}
+                        <button
+                            onClick={() => goToPage(currentPage + 1)}
+                            disabled={currentPage === totalPages}
+                            className="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300 disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
+                        >
+                            Next
+                        </button>
+                    </div>
                 )}
             </ul>
         </div>

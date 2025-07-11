@@ -1,8 +1,9 @@
 import supabase from "../config/supabase";
-import { Customer } from "../models/User";
+import { Customer, Purchase } from "../models/User";
 import CSRRequest, { CSRRequestStatus } from "../models/CSRRequest";
 import VehicleSubscription, {
     SubscriptionStatus,
+    Vehicle,
 } from "../models/VehicleSubscription";
 import { camelCase } from "lodash";
 
@@ -1040,5 +1041,68 @@ export const supabaseAPI = {
                 error: `Unexpected error: ${error.message}`,
             };
         }
+    },
+
+    async getPurchasesByCustomerId(userId: string): Promise<Purchase[]> {
+        const { data, error } = await supabase
+            .from("purchases")
+            .select("*")
+            .eq("user_id", userId)
+            .order("purchase_date", { ascending: false });
+
+        if (error) throw error;
+
+        return data.map((purchase) => ({
+            id: purchase.id,
+            userId: purchase.user_id,
+            vehicleId: purchase.vehicle_id,
+            purchaseDate: purchase.purchase_date,
+            amount: parseFloat(purchase.amount),
+            paymentMethod: purchase.payment_method,
+            coveredBySubscription: purchase.covered_by_subscription,
+            createdAt: purchase.created_at,
+            updatedAt: purchase.updated_at,
+        }));
+    },
+
+    async getVehicleById(vehicleId: string): Promise<Vehicle | null> {
+        const { data, error } = await supabase
+            .from("vehicles")
+            .select("*")
+            .eq("id", vehicleId)
+            .single();
+
+        if (error) return null;
+
+        return {
+            id: data.id,
+            vin: data.vin,
+            make: data.make,
+            model: data.model,
+            year: data.year,
+            color: data.color,
+            licensePlate: data.license_plate,
+            addedAt: data.added_at,
+        };
+    },
+
+    async getVehiclesByIds(vehicleIds: string[]): Promise<Vehicle[]> {
+        const { data, error } = await supabase
+            .from("vehicles")
+            .select("*")
+            .in("id", vehicleIds);
+
+        if (error) throw error;
+
+        return data.map((vehicle) => ({
+            id: vehicle.id,
+            vin: vehicle.vin,
+            make: vehicle.make,
+            model: vehicle.model,
+            year: vehicle.year,
+            color: vehicle.color,
+            licensePlate: vehicle.license_plate,
+            addedAt: vehicle.added_at,
+        }));
     },
 };

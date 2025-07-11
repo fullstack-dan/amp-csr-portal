@@ -3,6 +3,7 @@ import { useParams, Link } from "react-router";
 import { supabaseAPI as API } from "../api/supabaseAPI";
 import VehicleSubscriptionsList from "../components/VehicleSubscriptionsList";
 import AddNewSubscriptionModal from "../components/AddNewSubscriptionModal";
+import PurchaseHistory from "../components/PurchaseHistory";
 import {
     Mail,
     Phone,
@@ -102,6 +103,7 @@ export default function UserDetails() {
     const [info, setInfo] = useState("");
     const [infoColor, setInfoColor] = useState("bg-blue-500");
     const [activeTab, setActiveTab] = useState("overview");
+    const [purchaseHistory, setPurchaseHistory] = useState([]);
 
     useEffect(() => {
         if (!id) {
@@ -124,6 +126,11 @@ export default function UserDetails() {
                 customerId
             );
             setRequests(customerOpenRequests || []);
+
+            const customerPurchaseHistory = await API.getPurchasesByCustomerId(
+                customerId
+            );
+            setPurchaseHistory(customerPurchaseHistory || []);
 
             setFormData({
                 firstName: customerData.firstName,
@@ -553,6 +560,9 @@ export default function UserDetails() {
                             >
                                 Add New Subscription
                             </button>
+                        </DetailsCard>
+                        <DetailsCard title="Purchase History" className="mt-6">
+                            <PurchaseHistory purchases={purchaseHistory} />
                         </DetailsCard>
                     </>
                 )}

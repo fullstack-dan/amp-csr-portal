@@ -13,6 +13,8 @@ export default function RequestsList({
     const location = useLocation();
     const [searchQuery, setSearchQuery] = useState("");
     const [isOpen, setIsOpen] = useState(false);
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 5;
 
     // Automatically open if not on the home page ("/")
     useEffect(() => {
@@ -34,6 +36,19 @@ export default function RequestsList({
         if (!searchQuery.trim()) return requests;
         return fuse.search(searchQuery).map((res) => res.item);
     }, [searchQuery, requests, fuse]);
+
+    const paginatedRequests = useMemo(() => {
+        const startIndex = (currentPage - 1) * itemsPerPage;
+        return filteredRequests.slice(startIndex, startIndex + itemsPerPage);
+    }, [filteredRequests, currentPage]);
+
+    const totalPages = Math.ceil(filteredRequests.length / itemsPerPage);
+
+    const goToPage = (page) => {
+        if (page >= 1 && page <= totalPages) {
+            setCurrentPage(page);
+        }
+    };
 
     const getStatusColor = (status) => {
         switch (status) {
@@ -110,7 +125,7 @@ export default function RequestsList({
                         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500" />
                     </li>
                 ) : filteredRequests.length > 0 ? (
-                    filteredRequests.map((request) => (
+                    paginatedRequests.map((request) => (
                         <li
                             key={request.id}
                             className="flex justify-between items-start border-b border-gray-200 p-4 last:border-b-0 hover:bg-base-300 transition duration-200 ease-in-out"
@@ -153,6 +168,37 @@ export default function RequestsList({
                     <li className="py-4 text-center text-gray-500">
                         No requests found.
                     </li>
+                )}
+                {totalPages > 1 && (
+                    <div className="flex justify-center items-center gap-2 mt-4">
+                        <button
+                            onClick={() => goToPage(currentPage - 1)}
+                            disabled={currentPage === 1}
+                            className="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300 disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
+                        >
+                            Previous
+                        </button>
+                        {Array.from({ length: totalPages }, (_, i) => (
+                            <button
+                                key={i}
+                                onClick={() => goToPage(i + 1)}
+                                className={`px-3 py-1 rounded cursor-pointer ${
+                                    currentPage === i + 1
+                                        ? "bg-blue-600 text-white"
+                                        : "bg-gray-100 hover:bg-gray-200"
+                                }`}
+                            >
+                                {i + 1}
+                            </button>
+                        ))}
+                        <button
+                            onClick={() => goToPage(currentPage + 1)}
+                            disabled={currentPage === totalPages}
+                            className="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300 disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
+                        >
+                            Next
+                        </button>
+                    </div>
                 )}
             </ul>
         </div>
