@@ -52,12 +52,9 @@ export function DetailsHeader({
     showBorder = true,
     showShadow = true,
 }) {
-    const borderClass = showBorder ? "border-b border-gray-200" : "";
-    const shadowClass = showShadow ? "shadow-xs" : "";
-
     return (
-        <div className={`bg-white ${borderClass} ${shadowClass} ${className}`}>
-            <div className="p-6">{children}</div>
+        <div className={`bg-white ${className}`}>
+            <div className="">{children}</div>
         </div>
     );
 }
@@ -72,7 +69,7 @@ export function HeaderContent({
     actions,
 }) {
     return (
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center flex-wrap gap-4 justify-between p-6">
             <div>
                 <h2 className="text-2xl font-bold flex items-center gap-2">
                     {title}
@@ -95,12 +92,14 @@ export function HeaderContent({
 // Tabs component
 export function DetailsTabs({ tabs, activeTab, onTabChange }) {
     return (
-        <div className="tabs tabs-boxed">
+        <div className="tabs tabs-lift  ">
             {tabs.map((tab) => (
                 <button
                     key={tab.id}
                     className={`tab ${
-                        activeTab === tab.id ? "tab-active" : ""
+                        activeTab === tab.id
+                            ? "tab-active [--tab-bg:theme(colors.gray.100)]"
+                            : ""
                     }`}
                     onClick={() => onTabChange(tab.id)}
                 >

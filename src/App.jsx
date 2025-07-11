@@ -16,7 +16,7 @@ import ampLogo from "./assets/amp-logo.png";
 
 function App() {
     return (
-        <main className="h-screen flex flex-col bg-gray-100">
+        <main className="h-dvh flex flex-col bg-gray-100">
             <div className="border-b flex justify-between items-center border-gray-200 p-6 flex-shrink-0 bg-blue-800 text-white">
                 <Link to="/" className="flex items-center gap-4">
                     <img src={ampLogo} alt="AMP Logo" className="h-8" />
