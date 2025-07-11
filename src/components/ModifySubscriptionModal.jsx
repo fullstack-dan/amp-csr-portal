@@ -145,7 +145,7 @@ export default function ModifySubscriptionModal({ subscription, onClose }) {
                         >
                             Save Changes
                         </button>
-                        <button className="btn" onClick={onClose}>
+                        <button className="btn" onClick={() => onClose(null)}>
                             Cancel
                         </button>
                     </form>

@@ -406,8 +406,6 @@ export const supabaseAPI = {
             );
         }
 
-        console.log(data);
-
         return data;
     },
 
@@ -560,7 +558,22 @@ export const supabaseAPI = {
         error?: string;
         data?: VehicleSubscription;
     }> {
-        const { id, planType, status, planFeatures, billingInfo } = updatedSub;
+        const { id, customerId, planType, status, planFeatures, billingInfo } =
+            updatedSub;
+
+        // 0. Update the customer ID if it has changed
+        if (updatedSub.customerId) {
+            const { error: customerError } = await supabase
+                .from("vehicle_subscriptions")
+                .update({ customer_id: updatedSub.customerId })
+                .eq("id", id);
+            if (customerError) {
+                return {
+                    success: false,
+                    error: `Customer update failed: ${customerError.message}`,
+                };
+            }
+        }
 
         // 1. Update vehicle_subscriptions
         const { error: subError } = await supabase

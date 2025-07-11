@@ -30,6 +30,7 @@ import {
     InfoRow,
 } from "../components/DetailsViewLayout";
 import ModifySubscriptionModal from "../components/ModifySubscriptionModal";
+import TransferSubscriptionModal from "../components/TransferSubscriptionModal";
 
 const VehicleCard = ({ vehicle, onDelete }) => {
     const [isDeleting, setIsDeleting] = useState(false);
@@ -127,8 +128,6 @@ export default function SubscriptionDetails() {
             const data = await API.getSubscriptionById(subscriptionId);
             setSubscription(data);
 
-            console.log(data);
-
             if (data?.customerId) {
                 const customerData = await API.getCustomerById(data.customerId);
                 setCustomer(customerData);
@@ -155,13 +154,14 @@ export default function SubscriptionDetails() {
 
     const onModalClose = async (modifiedSub = null) => {
         document.getElementById("modifysub_modal").close();
+        document.getElementById("transfersub_modal").close();
         setLoading(true);
-        if (modifiedSub._targetInst !== null) {
-            //weirdly, onClose in this modal is returning an actual object. Workaround.
+        if (modifiedSub) {
             await API.updateSubscription(modifiedSub);
             const updatedSubscription = await API.getSubscriptionById(
                 subscriptionId
             );
+
             setSubscription(updatedSubscription);
             if (updatedSubscription.customerId) {
                 const customerData = await API.getCustomerById(
@@ -236,6 +236,10 @@ export default function SubscriptionDetails() {
                 subscription={subscription}
                 onClose={onModalClose}
             />
+            <TransferSubscriptionModal
+                subscription={subscription}
+                onClose={onModalClose}
+            />
             <DetailsHeader>
                 <HeaderContent
                     title={`${subscription?.planType} Plan`}
@@ -250,12 +254,23 @@ export default function SubscriptionDetails() {
                     }`}
                     actions={
                         <>
-                            <button className="btn btn-outline">
+                            <button
+                                className="btn btn-outline"
+                                onClick={() =>
+                                    document
+                                        .getElementById("transfersub_modal")
+                                        .showModal()
+                                }
+                            >
                                 Transfer Subscription
                             </button>
                             <button
                                 className="btn btn-primary"
-                                onClick={handleModifySubscription}
+                                onClick={() =>
+                                    document
+                                        .getElementById("modifysub_modal")
+                                        .showModal()
+                                }
                             >
                                 Manage Subscription
                             </button>
