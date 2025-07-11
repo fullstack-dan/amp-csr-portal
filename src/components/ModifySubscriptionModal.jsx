@@ -42,7 +42,7 @@ export default function ModifySubscriptionModal({ subscription, onClose }) {
 
     return (
         <dialog id="modifysub_modal" className="modal">
-            <div className="modal-box w-full max-w-3xl bg-gray-200 ">
+            <div className="modal-box max-w-3xl bg-gray-200 ">
                 <h3 className="font-bold text-xl mb-4">Manage Subscription</h3>
 
                 <div className="flex flex-col bg-white p-4 card border border-gray-50 shadow-md">
@@ -61,7 +61,7 @@ export default function ModifySubscriptionModal({ subscription, onClose }) {
                             <option value="Enterprise">Enterprise</option>
                         </select>
                     </div>
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="form-control">
                             <label className="label">
                                 <span className="label-text">Max Vehicles</span>
@@ -141,7 +141,7 @@ export default function ModifySubscriptionModal({ subscription, onClose }) {
                 <div className="modal-action">
                     <form method="dialog" className="flex gap-4">
                         <button
-                            className="btn btn-primary"
+                            className="btn btn-primary bg-blue-600"
                             onClick={handleSave}
                         >
                             Save Changes

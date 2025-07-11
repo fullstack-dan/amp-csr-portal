@@ -12,15 +12,9 @@ export default function UserList({
 }) {
     const location = useLocation();
     const [searchQuery, setSearchQuery] = useState("");
-    const [isOpen, setIsOpen] = useState(false);
+    const [isOpen, setIsOpen] = useState(true);
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 5;
-
-    useEffect(() => {
-        if (location.pathname !== "/") {
-            setIsOpen(true);
-        }
-    }, [location.pathname]);
 
     const fuse = useMemo(
         () =>
@@ -113,7 +107,7 @@ export default function UserList({
                     paginatedUsers.map((user) => (
                         <li
                             key={user.id}
-                            className="flex items-center justify-between border-b border-gray-200 p-4 hover:bg-base-300 last:border-b-0 hover:cursor-pointer transition duration-200 ease-in-out"
+                            className="flex flex-wrap gap-4 items-center justify-between border-b border-gray-200 p-4 hover:bg-base-300 last:border-b-0 hover:cursor-pointer transition duration-200 ease-in-out"
                         >
                             <div>
                                 <h4 className="font-semibold">

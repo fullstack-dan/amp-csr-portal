@@ -342,7 +342,7 @@ export default function UserDetails() {
                             {editing ? (
                                 <>
                                     <button
-                                        className="btn btn-primary btn-sm flex items-center gap-2"
+                                        className="btn btn-primary bg-blue-600 btn-sm flex items-center gap-2"
                                         onClick={handleSave}
                                         disabled={!hasChanges}
                                     >
@@ -359,7 +359,7 @@ export default function UserDetails() {
                                 </>
                             ) : (
                                 <button
-                                    className="btn btn-primary btn-sm flex items-center gap-2"
+                                    className="btn btn-primary bg-blue-600 btn-sm flex items-center gap-2"
                                     onClick={() => {
                                         setInfo("Editing customer information");
                                         setInfoColor("bg-blue-500");
@@ -551,7 +551,7 @@ export default function UserDetails() {
                                 onClose={handleAddSubscription}
                             />
                             <button
-                                className="btn btn-primary"
+                                className="btn btn-primary bg-blue-600"
                                 onClick={() => {
                                     document
                                         .getElementById("addnewsub_modal")

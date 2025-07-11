@@ -18,7 +18,7 @@ export default function VehicleSubscriptionsList({ subscriptions, onDelete }) {
     return (
         <>
             {deletingSub ? (
-                <div className="text-center text-gray-500">
+                <div className="text-center text-gray-500 mb-4">
                     <h2 className="text-lg text-center font-bold">
                         Remove Subscription from Account
                     </h2>

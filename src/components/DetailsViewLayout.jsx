@@ -26,7 +26,10 @@ export function DetailsViewLayout({
             <div className="flex flex-col items-center justify-center h-full">
                 <AlertCircle className="w-12 h-12 text-gray-400 mb-4" />
                 <p className="text-gray-500">{error || notFoundMessage}</p>
-                <Link to={backLink} className="btn btn-primary mt-4">
+                <Link
+                    to={backLink}
+                    className="btn btn-primary bg-blue-600 mt-4"
+                >
                     Go Back
                 </Link>
             </div>

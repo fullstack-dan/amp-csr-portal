@@ -89,7 +89,7 @@ export default function RequestDetails() {
                     }`}
                     actions={
                         <button
-                            className="btn btn-primary"
+                            className="btn btn-primary bg-blue-600"
                             disabled={
                                 request?.status !== CSRRequestStatus.PENDING
                             }

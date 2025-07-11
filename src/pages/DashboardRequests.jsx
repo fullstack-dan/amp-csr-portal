@@ -98,7 +98,9 @@ export default function DashboardRequests() {
                 <div className="flex gap-2">
                     <button
                         className={`btn btn-sm ${
-                            statusFilter === "all" ? "btn-primary" : "btn-ghost"
+                            statusFilter === "all"
+                                ? "btn-primary bg-blue-600"
+                                : "btn-ghost"
                         }`}
                         onClick={() => setStatusFilter("all")}
                         disabled={loading}

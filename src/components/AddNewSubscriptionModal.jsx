@@ -257,7 +257,7 @@ export default function AddNewSubscriptionModal({ customerId, onClose }) {
 
     return (
         <dialog id="addnewsub_modal" className="modal ">
-            <div className="bg-gray-200 modal-box w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+            <div className="bg-gray-200 modal-box max-w-4xl max-h-[90vh] overflow-y-auto">
                 <h3 className="font-bold text-xl mb-4">Add New Subscription</h3>
 
                 {error && (
@@ -287,7 +287,7 @@ export default function AddNewSubscriptionModal({ customerId, onClose }) {
                         </select>
                     </div>
 
-                    <div className="grid grid-cols-3 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div className="form-control flex flex-col">
                             <label className="label">
                                 <span className="label-text">Max Vehicles</span>
@@ -344,7 +344,7 @@ export default function AddNewSubscriptionModal({ customerId, onClose }) {
                     {loadingLocations ? (
                         <p>Loading locations...</p>
                     ) : (
-                        <div className="grid grid-cols-2 gap-2">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                             {locations.map((location) => (
                                 <label
                                     key={location.id}
@@ -373,7 +373,7 @@ export default function AddNewSubscriptionModal({ customerId, onClose }) {
                 <div className="card bg-white p-4 mb-4 border border-gray-50 shadow-md">
                     <h4 className="font-semibold mb-3">Billing Information</h4>
 
-                    <div className="grid grid-cols-3 gap-4 mb-4">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                         <div className="form-control">
                             <label className="label">
                                 <span className="label-text">Start Date</span>
@@ -641,9 +641,9 @@ export default function AddNewSubscriptionModal({ customerId, onClose }) {
                     )}
                 </div>
 
-                <div className="modal-action">
+                <div className="modal-action flex flex-col md:flex-row gap-2">
                     <button
-                        className="btn btn-primary"
+                        className="btn btn-primary bg-blue-600"
                         onClick={handleSave}
                         disabled={loading}
                     >

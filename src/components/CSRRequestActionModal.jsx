@@ -45,7 +45,7 @@ export default function CSRRequestActionModal({ request, onClose }) {
 
     return (
         <dialog id="csrreqaction_modal" className="modal">
-            <div className="modal-box w-11/12 max-w-3xl">
+            <div className="modal-box max-w-3xl">
                 <div>
                     <h2 className="text-xl font-bold">
                         {request.requestType}
@@ -86,7 +86,7 @@ export default function CSRRequestActionModal({ request, onClose }) {
                 <div className="modal-action">
                     <form method="dialog" className="flex gap-4">
                         <button
-                            className="btn btn-primary"
+                            className="btn btn-primary bg-blue-600"
                             onClick={handleSubmit}
                         >
                             Submit

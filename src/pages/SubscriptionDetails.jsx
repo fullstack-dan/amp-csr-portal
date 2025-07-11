@@ -262,17 +262,17 @@ export default function SubscriptionDetails() {
                                         .showModal()
                                 }
                             >
-                                Transfer Subscription
+                                Transfer
                             </button>
                             <button
-                                className="btn btn-primary"
+                                className="btn btn-primary bg-blue-600"
                                 onClick={() =>
                                     document
                                         .getElementById("modifysub_modal")
                                         .showModal()
                                 }
                             >
-                                Manage Subscription
+                                Manage
                             </button>
                         </>
                     }

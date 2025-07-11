@@ -64,7 +64,7 @@ export default function TransferSubscriptionModal({ subscription, onClose }) {
 
     return (
         <dialog id="transfersub_modal" className="modal">
-            <div className="modal-box w-full max-w-3xl">
+            <div className="modal-box max-w-3xl">
                 <h3 className="font-bold text-xl mb-4">
                     Transfer Subscription
                 </h3>
@@ -129,7 +129,7 @@ export default function TransferSubscriptionModal({ subscription, onClose }) {
                 <div className="modal-action">
                     <form method="dialog" className="flex gap-4">
                         <button
-                            className="btn btn-primary"
+                            className="btn btn-primary bg-blue-600"
                             onClick={handleSave}
                             disabled={!selectedCustomer}
                         >

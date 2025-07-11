@@ -108,7 +108,10 @@ export default function AddVehicleToSubCard({ cancelForm, onSubmit }) {
                 />
             </div>
             <div className="flex w-full justify-end">
-                <button className="btn btn-primary mt-4" type="submit">
+                <button
+                    className="btn btn-primary bg-blue-600 mt-4"
+                    type="submit"
+                >
                     Add Vehicle
                 </button>
                 <button
