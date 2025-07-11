@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router";
 import { supabaseAPI as API } from "../api/supabaseAPI";
 import { CSRRequestStatus } from "../models/CSRRequest";
-import CSRRequestActionModal from "../components/CSRRequestActionModal";
+import { CSRRequestActionModal } from "../components";
 import { User, Clock, Info } from "lucide-react";
 import {
     DetailsViewLayout,

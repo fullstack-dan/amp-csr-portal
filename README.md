@@ -1,14 +1,6 @@
 # amp-csr-portal
 
-Hello AMP!
-
-Pages:
-
--   Dashboard home: View all active CSR requests, search for users, see CSR information.
--   User search: Search for users by name or email, view their CSR requests.
--   User profile: View user details, CSR history, and current requests.
-    -   Also see and edit vehicle subscriptions.
--   CSR request page: View details of a CSR request, including status and history.
+This is a customer service representative (CSR) portal built with React, Supabase, and Tailwind CSS. The portal allows CSRs to manage user information, vehicle subscriptions, purchase history, and customer service requests (CSR requests). It is designed to be responsive and works on mobile devices.
 
 ## Progress
 
@@ -28,4 +20,25 @@ I spent these two days working on the vehicle subscriptions. I added a view to t
 
 ### Friday
 
-I finished all of the required features for the CSR portal. Did a lot of work on mobile app fixes and styling as well, making sure it was responsive and components resized properly. Lastly, I went through and did some better error handling for all of my forms.
+I finished all of the required features for the CSR portal. Did a lot of work on mobile app fixes and styling as well, making sure it was responsive and components resized properly. Lastly, I went through and did some better error handling and messaging for all of my forms.
+
+## Features
+
+-   **User management**: View, edit, and manage user information and CSR requests.
+-   **Vehicle subscriptions**: View and manage vehicle subscriptions for each user. CSRs can transfer, pause, cancel, delete and add new subscriptions.
+-   **Purchase histor**y: View a user's purchase history and related details.
+-   **Customer Service Requests**: View and manage CSR requests, including taking actions on them.
+-   **Responsive design**: The application is fully responsive and works on mobile devices.
+-   **Error handling**: Improved error handling and messaging throughout the application.
+-   **Responsive search**: Search for users and CSR requests with fuzzy search capabilities.
+
+## Technologies Used
+
+-   **React**: everyone knows this one
+-   **Supabase**: backend API and database
+-   **Tailwind CSS**: styling and responsive design
+-   **daisyUI**: UI components and styling
+-   **Lucide Icons**: icons
+-   **Vite**: live development and build process
+
+Deployed on [Render](https://amp-csr-portal-f9gu.onrender.com/)

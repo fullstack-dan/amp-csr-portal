@@ -1,4 +1,4 @@
-import Navbar from "./components/Navbar";
+import { Navbar } from "./components";
 import {
     DashboardHome,
     DashboardRequests,
@@ -51,6 +51,20 @@ function App() {
                             <Route
                                 path="/subscriptions/:subscriptionId"
                                 element={<SubscriptionDetails />}
+                            />
+                            <Route
+                                path="*"
+                                element={
+                                    <div className="p-6 text-center">
+                                        <h2 className="text-2xl font-semibold text-gray-700">
+                                            Page Not Found
+                                        </h2>
+                                        <p className="text-gray-500">
+                                            The page you are looking for does
+                                            not exist.
+                                        </p>
+                                    </div>
+                                }
                             />
                         </Routes>
                     </div>

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabaseAPI as API } from "../api/supabaseAPI";
-import UserList from "../components/UserList";
+import { UserList } from "../components";
 
 /**
  * DashboardUsers component displays a list of users and a user search bar in the admin dashboard

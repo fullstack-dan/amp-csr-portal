@@ -1,7 +1,11 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router";
 import { supabaseAPI as API } from "../api/supabaseAPI";
-import AddVehicleToSubCard from "../components/AddVehicleToSubCard";
+import {
+    AddVehicleToSubCard,
+    ModifySubscriptionModal,
+    TransferSubscriptionModal,
+} from "../components";
 import {
     Mail,
     Phone,
@@ -29,8 +33,6 @@ import {
     DetailsCard,
     InfoRow,
 } from "../components/DetailsViewLayout";
-import ModifySubscriptionModal from "../components/ModifySubscriptionModal";
-import TransferSubscriptionModal from "../components/TransferSubscriptionModal";
 import { useAlert } from "../context/AlertContext";
 
 const VehicleCard = ({ vehicle, onDelete }) => {

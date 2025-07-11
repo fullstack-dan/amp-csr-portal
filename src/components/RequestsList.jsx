@@ -10,18 +10,10 @@ export default function RequestsList({
     showTitle = true,
     className = "",
 }) {
-    const location = useLocation();
     const [searchQuery, setSearchQuery] = useState("");
-    const [isOpen, setIsOpen] = useState(false);
+    const [isOpen, setIsOpen] = useState(true);
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 5;
-
-    // Automatically open if not on the home page ("/")
-    useEffect(() => {
-        if (location.pathname !== "/") {
-            setIsOpen(true);
-        }
-    }, [location.pathname]);
 
     const fuse = useMemo(
         () =>

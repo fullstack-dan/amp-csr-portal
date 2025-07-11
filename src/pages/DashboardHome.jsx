@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 import { supabaseAPI as API } from "../api/supabaseAPI";
 import { CSRRequestStatus, CSRRequestType } from "../models/CSRRequest";
-import UserList from "../components/UserList";
-import RequestsList from "../components/RequestsList";
+import { UserList, RequestsList } from "../components";
 
 export default function DashboardHome() {
     const [pendingRequests, setPendingRequests] = useState([]);
@@ -64,7 +63,7 @@ export default function DashboardHome() {
             <div className="bg-white flex items-center p-6 shadow-sm">
                 <h1 className="text-2xl font-light">Good morning, User!</h1>
             </div>
-            <div className="grid grid-cols-1 h-full w-full md:grid-cols-2 p-6 ">
+            <div className="grid grid-cols-1 h-full w-full md:grid-cols-2 p-2 ">
                 {/* Requests section */}
                 <div className="p-6">
                     <RequestsList

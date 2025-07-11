@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router";
 import { supabaseAPI as API } from "../api/supabaseAPI";
-import VehicleSubscriptionsList from "../components/VehicleSubscriptionsList";
-import AddNewSubscriptionModal from "../components/AddNewSubscriptionModal";
-import PurchaseHistory from "../components/PurchaseHistory";
+import {
+    VehicleSubscriptionsList,
+    AddNewSubscriptionModal,
+    PurchaseHistory,
+} from "../components";
 import { useAlert } from "../context/AlertContext";
 import {
     Mail,

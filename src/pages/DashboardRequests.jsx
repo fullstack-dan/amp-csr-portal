@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabaseAPI as API } from "../api/supabaseAPI";
-import RequestsList from "../components/RequestsList";
+import { RequestsList } from "../components";
 import { CSRRequestStatus } from "../models/CSRRequest";
 
 /**

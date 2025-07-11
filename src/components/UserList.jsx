@@ -10,7 +10,6 @@ export default function UserList({
     showTitle = true,
     className = "",
 }) {
-    const location = useLocation();
     const [searchQuery, setSearchQuery] = useState("");
     const [isOpen, setIsOpen] = useState(true);
     const [currentPage, setCurrentPage] = useState(1);
