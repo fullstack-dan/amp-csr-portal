@@ -267,7 +267,7 @@ export default function AddNewSubscriptionModal({ customerId, onClose }) {
                     </div>
                 )}
 
-                {/* Plan Selection */}
+                {/* Plan selection */}
                 <div className="card bg-white p-4 mb-4 border border-gray-50 shadow-md">
                     <h4 className="font-semibold mb-3">Plan Details</h4>
 
@@ -338,7 +338,7 @@ export default function AddNewSubscriptionModal({ customerId, onClose }) {
                     </div>
                 </div>
 
-                {/* Location Selection */}
+                {/* Location selection */}
                 <div className="card bg-white p-4 mb-4 border border-gray-50 shadow-md">
                     <h4 className="font-semibold mb-3">Available Locations</h4>
                     {loadingLocations ? (
@@ -369,7 +369,7 @@ export default function AddNewSubscriptionModal({ customerId, onClose }) {
                     )}
                 </div>
 
-                {/* Billing Information */}
+                {/* Billing information */}
                 <div className="card bg-white p-4 mb-4 border border-gray-50 shadow-md">
                     <h4 className="font-semibold mb-3">Billing Information</h4>
 
@@ -426,7 +426,7 @@ export default function AddNewSubscriptionModal({ customerId, onClose }) {
                     </div>
                 </div>
 
-                {/* Payment Method */}
+                {/* Payment method */}
                 <div className="card bg-white p-4 mb-4 border border-gray-50 shadow-md">
                     <h4 className="font-semibold mb-3">Payment Method</h4>
 
@@ -543,8 +543,8 @@ export default function AddNewSubscriptionModal({ customerId, onClose }) {
                     </div>
 
                     {hasDiscount && (
-                        <div className="space-y-4">
-                            <div className="form-control">
+                        <div className="grid grid-cols-2 gap-4">
+                            <div className="form-control flex flex-col">
                                 <label className="label">
                                     <span className="label-text">
                                         Discount Type
@@ -565,7 +565,7 @@ export default function AddNewSubscriptionModal({ customerId, onClose }) {
                             </div>
 
                             {discountType === "percentage" ? (
-                                <div className="form-control">
+                                <div className="form-control flex flex-col">
                                     <label className="label">
                                         <span className="label-text">
                                             Discount Percentage
@@ -585,7 +585,7 @@ export default function AddNewSubscriptionModal({ customerId, onClose }) {
                                     />
                                 </div>
                             ) : (
-                                <div className="form-control">
+                                <div className="form-control flex flex-col">
                                     <label className="label">
                                         <span className="label-text">
                                             Discount Amount (USD)
@@ -606,7 +606,7 @@ export default function AddNewSubscriptionModal({ customerId, onClose }) {
                                 </div>
                             )}
 
-                            <div className="form-control">
+                            <div className="form-control flex flex-col">
                                 <label className="label">
                                     <span className="label-text">
                                         Reason for Discount
@@ -622,7 +622,7 @@ export default function AddNewSubscriptionModal({ customerId, onClose }) {
                                 />
                             </div>
 
-                            <div className="form-control">
+                            <div className="form-control flex flex-col">
                                 <label className="label">
                                     <span className="label-text">
                                         Valid Until (Optional)

@@ -276,11 +276,6 @@ export default function UserDetails() {
 
     const tabs = [
         { id: "overview", label: "Overview" },
-        {
-            id: "subscriptions",
-            label: "Subscriptions",
-            count: subscriptions.length,
-        },
         { id: "requests", label: "Requests", count: requests.length },
     ];
 
@@ -512,28 +507,23 @@ export default function UserDetails() {
                         </DetailsCard>
                     </DetailsGrid>
                 )}
-
-                {activeTab === "subscriptions" && (
-                    <DetailsCard title="Vehicle Subscriptions">
-                        <VehicleSubscriptionsList
-                            subscriptions={subscriptions}
-                        />
-                        <AddNewSubscriptionModal
-                            customerId={customer?.id}
-                            onClose={handleAddSubscription}
-                        />
-                        <button
-                            className="btn btn-primary"
-                            onClick={() => {
-                                document
-                                    .getElementById("addnewsub_modal")
-                                    ?.showModal();
-                            }}
-                        >
-                            Add New Subscription
-                        </button>
-                    </DetailsCard>
-                )}
+                <DetailsCard title="Vehicle Subscriptions" className="mt-6">
+                    <VehicleSubscriptionsList subscriptions={subscriptions} />
+                    <AddNewSubscriptionModal
+                        customerId={customer?.id}
+                        onClose={handleAddSubscription}
+                    />
+                    <button
+                        className="btn btn-primary"
+                        onClick={() => {
+                            document
+                                .getElementById("addnewsub_modal")
+                                ?.showModal();
+                        }}
+                    >
+                        Add New Subscription
+                    </button>
+                </DetailsCard>
 
                 {activeTab === "requests" && (
                     <DetailsCard title="Customer Requests">

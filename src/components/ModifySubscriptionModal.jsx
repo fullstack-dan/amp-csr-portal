@@ -42,99 +42,100 @@ export default function ModifySubscriptionModal({ subscription, onClose }) {
 
     return (
         <dialog id="modifysub_modal" className="modal">
-            <div className="modal-box w-full max-w-3xl">
+            <div className="modal-box w-full max-w-3xl bg-gray-200 ">
                 <h3 className="font-bold text-xl mb-4">Manage Subscription</h3>
 
-                <div className="form-control flex flex-col mb-4">
-                    <label className="label">
-                        <span className="label-text">Plan Type</span>
-                    </label>
-                    <select
-                        className="select select-bordered"
-                        value={planType}
-                        onChange={(e) => setPlanType(e.target.value)}
-                    >
-                        <option value="Basic">Basic</option>
-                        <option value="Standard">Standard</option>
-                        <option value="Premium">Premium</option>
-                        <option value="Enterprise">Enterprise</option>
-                    </select>
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                    <div className="form-control">
+                <div className="flex flex-col bg-white p-4 card border border-gray-50 shadow-md">
+                    <div className="form-control flex flex-col mb-4">
                         <label className="label">
-                            <span className="label-text">Max Vehicles</span>
+                            <span className="label-text">Plan Type</span>
                         </label>
-                        <input
-                            type="number"
-                            className="input input-bordered"
-                            value={maxVehicles}
-                            onChange={(e) =>
-                                setMaxVehicles(Number(e.target.value))
-                            }
-                        />
+                        <select
+                            className="select select-bordered"
+                            value={planType}
+                            onChange={(e) => setPlanType(e.target.value)}
+                        >
+                            <option value="Basic">Basic</option>
+                            <option value="Standard">Standard</option>
+                            <option value="Premium">Premium</option>
+                            <option value="Enterprise">Enterprise</option>
+                        </select>
                     </div>
-
-                    <div className="form-control">
+                    <div className="grid grid-cols-2 gap-4">
+                        <div className="form-control">
+                            <label className="label">
+                                <span className="label-text">Max Vehicles</span>
+                            </label>
+                            <input
+                                type="number"
+                                className="input input-bordered"
+                                value={maxVehicles}
+                                onChange={(e) =>
+                                    setMaxVehicles(Number(e.target.value))
+                                }
+                            />
+                        </div>
+                        <div className="form-control">
+                            <label className="label">
+                                <span className="label-text">
+                                    Max Washes / Month
+                                </span>
+                            </label>
+                            <input
+                                type="number"
+                                className="input input-bordered"
+                                value={maxWashes}
+                                onChange={(e) =>
+                                    setMaxWashes(Number(e.target.value))
+                                }
+                            />
+                        </div>
+                    </div>
+                    <div className="form-control mt-4">
+                        <label className="label cursor-pointer">
+                            <span className="label-text">
+                                Detailing Included
+                            </span>
+                            <input
+                                type="checkbox"
+                                className="toggle toggle-primary"
+                                checked={detailingIncluded}
+                                onChange={() =>
+                                    setDetailingIncluded(!detailingIncluded)
+                                }
+                            />
+                        </label>
+                    </div>
+                    <div className="form-control flex flex-col mt-4">
+                        <label className="label">
+                            <span className="label-text">Status</span>
+                        </label>
+                        <select
+                            className="select select-bordered"
+                            value={status}
+                            onChange={(e) => setStatus(e.target.value)}
+                        >
+                            <option value="active">Active</option>
+                            <option value="paused">Paused</option>
+                            <option value="cancelled">Cancelled</option>
+                        </select>
+                    </div>
+                    <div className="form-control flex flex-col mt-4">
                         <label className="label">
                             <span className="label-text">
-                                Max Washes / Month
+                                Billing Amount (USD)
                             </span>
                         </label>
                         <input
                             type="number"
+                            step="0.01"
                             className="input input-bordered"
-                            value={maxWashes}
+                            value={billingAmount}
                             onChange={(e) =>
-                                setMaxWashes(Number(e.target.value))
+                                setBillingAmount(Number(e.target.value))
                             }
                         />
                     </div>
-                </div>
-
-                <div className="form-control mt-4">
-                    <label className="label cursor-pointer">
-                        <span className="label-text">Detailing Included</span>
-                        <input
-                            type="checkbox"
-                            className="toggle toggle-primary"
-                            checked={detailingIncluded}
-                            onChange={() =>
-                                setDetailingIncluded(!detailingIncluded)
-                            }
-                        />
-                    </label>
-                </div>
-
-                <div className="form-control flex flex-col mt-4">
-                    <label className="label">
-                        <span className="label-text">Status</span>
-                    </label>
-                    <select
-                        className="select select-bordered"
-                        value={status}
-                        onChange={(e) => setStatus(e.target.value)}
-                    >
-                        <option value="active">Active</option>
-                        <option value="paused">Paused</option>
-                        <option value="cancelled">Cancelled</option>
-                    </select>
-                </div>
-
-                <div className="form-control flex flex-col mt-4">
-                    <label className="label">
-                        <span className="label-text">Billing Amount (USD)</span>
-                    </label>
-                    <input
-                        type="number"
-                        step="0.01"
-                        className="input input-bordered"
-                        value={billingAmount}
-                        onChange={(e) =>
-                            setBillingAmount(Number(e.target.value))
-                        }
-                    />
                 </div>
 
                 <div className="modal-action">
