@@ -937,4 +937,108 @@ export const supabaseAPI = {
             throw new Error(`Failed to create subscription: ${error.message}`);
         }
     },
+
+    async deleteSubscription(subscriptionId: string): Promise<{
+        success: boolean;
+        error?: string;
+    }> {
+        try {
+            // First, verify the subscription exists
+            const subscription = await this.getSubscriptionById(subscriptionId);
+            if (!subscription) {
+                return {
+                    success: false,
+                    error: "Subscription not found",
+                };
+            }
+
+            // Delete in reverse order of foreign key dependencies
+
+            // 1. Delete billing discount if exists
+            const { error: discountError } = await supabase
+                .from("billing_discounts")
+                .delete()
+                .eq("subscription_id", subscriptionId);
+
+            if (discountError) {
+                console.error("Error deleting discount:", discountError);
+                // Continue even if discount deletion fails (might not exist)
+            }
+
+            // 2. Delete billing info
+            const { error: billingError } = await supabase
+                .from("billing_info")
+                .delete()
+                .eq("subscription_id", subscriptionId);
+
+            if (billingError) {
+                return {
+                    success: false,
+                    error: `Failed to delete billing info: ${billingError.message}`,
+                };
+            }
+
+            // 3. Delete subscription locations
+            const { error: locationsError } = await supabase
+                .from("subscription_locations")
+                .delete()
+                .eq("subscription_id", subscriptionId);
+
+            if (locationsError) {
+                return {
+                    success: false,
+                    error: `Failed to delete subscription locations: ${locationsError.message}`,
+                };
+            }
+
+            // 4. Delete vehicles
+            const { error: vehiclesError } = await supabase
+                .from("vehicles")
+                .delete()
+                .eq("subscription_id", subscriptionId);
+
+            if (vehiclesError) {
+                return {
+                    success: false,
+                    error: `Failed to delete vehicles: ${vehiclesError.message}`,
+                };
+            }
+
+            // 5. Delete subscription plan features
+            const { error: featuresError } = await supabase
+                .from("subscription_plan_features")
+                .delete()
+                .eq("subscription_id", subscriptionId);
+
+            if (featuresError) {
+                return {
+                    success: false,
+                    error: `Failed to delete plan features: ${featuresError.message}`,
+                };
+            }
+
+            // 6. Finally, delete the subscription itself
+            const { error: subscriptionError } = await supabase
+                .from("vehicle_subscriptions")
+                .delete()
+                .eq("id", subscriptionId);
+
+            if (subscriptionError) {
+                return {
+                    success: false,
+                    error: `Failed to delete subscription: ${subscriptionError.message}`,
+                };
+            }
+
+            return {
+                success: true,
+            };
+        } catch (error) {
+            console.error("Error in deleteSubscription:", error);
+            return {
+                success: false,
+                error: `Unexpected error: ${error.message}`,
+            };
+        }
+    },
 };

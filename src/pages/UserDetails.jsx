@@ -228,6 +228,24 @@ export default function UserDetails() {
         }, 3000);
     };
 
+    const handleRemoveSubscription = async (subscriptionId) => {
+        try {
+            const { success } = await API.deleteSubscription(subscriptionId);
+            if (!success) throw new Error("Failed to delete subscription"); //TODO: add better error handling
+            setSubscriptions((prev) =>
+                prev.filter((sub) => sub.id !== subscriptionId)
+            );
+            setInfo("Subscription removed successfully.");
+            setInfoColor("bg-green-500");
+            setTimeout(() => {
+                setInfo("Editing customer information");
+                setInfoColor("bg-blue-500");
+            }, 3000);
+        } catch (error) {
+            console.error("Failed to remove subscription:", error);
+        }
+    };
+
     const validateFormData = () => {
         const {
             firstName,
@@ -381,149 +399,163 @@ export default function UserDetails() {
 
             <DetailsContent>
                 {activeTab === "overview" && (
-                    <DetailsGrid cols={3}>
-                        {/* Contact information */}
-                        <DetailsCard title="Contact Information" icon={User}>
-                            {editing ? (
-                                <div className="space-y-3">
-                                    <div>
-                                        <label className="text-sm text-gray-600">
-                                            Phone
-                                        </label>
-                                        <input
-                                            type="tel"
-                                            name="phone"
-                                            value={formData.phone}
-                                            onChange={handleInputChange}
-                                            className="input input-bordered w-full mt-1"
-                                            placeholder="Phone number"
+                    <>
+                        <DetailsGrid cols={3}>
+                            {/* Contact information */}
+                            <DetailsCard
+                                title="Contact Information"
+                                icon={User}
+                            >
+                                {editing ? (
+                                    <div className="space-y-3">
+                                        <div>
+                                            <label className="text-sm text-gray-600">
+                                                Phone
+                                            </label>
+                                            <input
+                                                type="tel"
+                                                name="phone"
+                                                value={formData.phone}
+                                                onChange={handleInputChange}
+                                                className="input input-bordered w-full mt-1"
+                                                placeholder="Phone number"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="text-sm text-gray-600">
+                                                Email
+                                            </label>
+                                            <input
+                                                type="email"
+                                                name="email"
+                                                value={formData.email}
+                                                onChange={handleInputChange}
+                                                className="input input-bordered w-full mt-1"
+                                                placeholder="Email address"
+                                            />
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <div className="space-y-3">
+                                        <InfoRowWithIcon
+                                            icon={Phone}
+                                            label="Phone"
+                                            value={formatPhoneNumber(
+                                                customer?.phone
+                                            )}
+                                        />
+                                        <InfoRowWithIcon
+                                            icon={Mail}
+                                            label="Email"
+                                            value={customer?.email}
                                         />
                                     </div>
-                                    <div>
-                                        <label className="text-sm text-gray-600">
-                                            Email
-                                        </label>
-                                        <input
-                                            type="email"
-                                            name="email"
-                                            value={formData.email}
-                                            onChange={handleInputChange}
-                                            className="input input-bordered w-full mt-1"
-                                            placeholder="Email address"
-                                        />
-                                    </div>
-                                </div>
-                            ) : (
-                                <div className="space-y-3">
-                                    <InfoRowWithIcon
-                                        icon={Phone}
-                                        label="Phone"
-                                        value={formatPhoneNumber(
-                                            customer?.phone
-                                        )}
-                                    />
-                                    <InfoRowWithIcon
-                                        icon={Mail}
-                                        label="Email"
-                                        value={customer?.email}
-                                    />
-                                </div>
-                            )}
-                        </DetailsCard>
+                                )}
+                            </DetailsCard>
 
-                        {/* Address */}
-                        <DetailsCard title="Address" icon={MapPin}>
-                            {editing ? (
-                                <div className="space-y-3">
-                                    <input
-                                        type="text"
-                                        name="street"
-                                        value={formData.street}
-                                        onChange={handleInputChange}
-                                        className="input input-bordered w-full"
-                                        placeholder="Street address"
-                                    />
-                                    <div className="grid grid-cols-2 gap-2">
+                            {/* Address */}
+                            <DetailsCard title="Address" icon={MapPin}>
+                                {editing ? (
+                                    <div className="space-y-3">
                                         <input
                                             type="text"
-                                            name="city"
-                                            value={formData.city}
+                                            name="street"
+                                            value={formData.street}
                                             onChange={handleInputChange}
-                                            className="input input-bordered"
-                                            placeholder="City"
+                                            className="input input-bordered w-full"
+                                            placeholder="Street address"
                                         />
+                                        <div className="grid grid-cols-2 gap-2">
+                                            <input
+                                                type="text"
+                                                name="city"
+                                                value={formData.city}
+                                                onChange={handleInputChange}
+                                                className="input input-bordered"
+                                                placeholder="City"
+                                            />
+                                            <input
+                                                type="text"
+                                                name="state"
+                                                value={formData.state}
+                                                onChange={handleInputChange}
+                                                className="input input-bordered"
+                                                placeholder="State"
+                                                maxLength="2"
+                                            />
+                                        </div>
                                         <input
                                             type="text"
-                                            name="state"
-                                            value={formData.state}
+                                            name="zipCode"
+                                            value={formData.zipCode}
                                             onChange={handleInputChange}
-                                            className="input input-bordered"
-                                            placeholder="State"
-                                            maxLength="2"
+                                            className="input input-bordered w-full"
+                                            placeholder="ZIP code"
                                         />
                                     </div>
-                                    <input
-                                        type="text"
-                                        name="zipCode"
-                                        value={formData.zipCode}
-                                        onChange={handleInputChange}
-                                        className="input input-bordered w-full"
-                                        placeholder="ZIP code"
+                                ) : (
+                                    <div className="space-y-1">
+                                        <p>{customer?.address.street}</p>
+                                        <p>
+                                            {customer?.address.city},{" "}
+                                            {customer?.address.state}
+                                        </p>
+                                        <p>{customer?.address.zipCode}</p>
+                                    </div>
+                                )}
+                            </DetailsCard>
+
+                            {/* Account status */}
+                            <DetailsCard title="Account Status" icon={Activity}>
+                                <div className="space-y-3">
+                                    <InfoRow
+                                        label="Member Since"
+                                        value={new Date(
+                                            customer?.createdAt
+                                        ).toLocaleDateString("en-US", {
+                                            year: "numeric",
+                                            month: "long",
+                                            day: "numeric",
+                                        })}
+                                    />
+                                    <div>
+                                        <p className="text-sm text-gray-600">
+                                            Status
+                                        </p>
+                                        <StatusBadge status="active" />
+                                    </div>
+                                    <InfoRow
+                                        label="Role"
+                                        value={customer?.role}
                                     />
                                 </div>
-                            ) : (
-                                <div className="space-y-1">
-                                    <p>{customer?.address.street}</p>
-                                    <p>
-                                        {customer?.address.city},{" "}
-                                        {customer?.address.state}
-                                    </p>
-                                    <p>{customer?.address.zipCode}</p>
-                                </div>
-                            )}
+                            </DetailsCard>
+                        </DetailsGrid>
+                        <DetailsCard
+                            title="Vehicle Subscriptions"
+                            className="mt-6"
+                        >
+                            <VehicleSubscriptionsList
+                                subscriptions={subscriptions}
+                                onDelete={handleRemoveSubscription}
+                            />
+                            <AddNewSubscriptionModal
+                                customerId={customer?.id}
+                                onClose={handleAddSubscription}
+                            />
+                            <button
+                                className="btn btn-primary"
+                                onClick={() => {
+                                    document
+                                        .getElementById("addnewsub_modal")
+                                        ?.showModal();
+                                }}
+                            >
+                                Add New Subscription
+                            </button>
                         </DetailsCard>
-
-                        {/* Account status */}
-                        <DetailsCard title="Account Status" icon={Activity}>
-                            <div className="space-y-3">
-                                <InfoRow
-                                    label="Member Since"
-                                    value={new Date(
-                                        customer?.createdAt
-                                    ).toLocaleDateString("en-US", {
-                                        year: "numeric",
-                                        month: "long",
-                                        day: "numeric",
-                                    })}
-                                />
-                                <div>
-                                    <p className="text-sm text-gray-600">
-                                        Status
-                                    </p>
-                                    <StatusBadge status="active" />
-                                </div>
-                                <InfoRow label="Role" value={customer?.role} />
-                            </div>
-                        </DetailsCard>
-                    </DetailsGrid>
+                    </>
                 )}
-                <DetailsCard title="Vehicle Subscriptions" className="mt-6">
-                    <VehicleSubscriptionsList subscriptions={subscriptions} />
-                    <AddNewSubscriptionModal
-                        customerId={customer?.id}
-                        onClose={handleAddSubscription}
-                    />
-                    <button
-                        className="btn btn-primary"
-                        onClick={() => {
-                            document
-                                .getElementById("addnewsub_modal")
-                                ?.showModal();
-                        }}
-                    >
-                        Add New Subscription
-                    </button>
-                </DetailsCard>
 
                 {activeTab === "requests" && (
                     <DetailsCard title="Customer Requests">

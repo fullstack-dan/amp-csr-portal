@@ -49,7 +49,7 @@ const VehicleCard = ({ vehicle, onDelete }) => {
                     </p>
                     <div className="flex justify-center mt-4">
                         <button
-                            className="btn bg-red-500 text-white px-4 py-2 rounded-md"
+                            className="btn btn-error x-4 py-2 rounded-md"
                             onClick={() => onDelete(vehicle.id)}
                         >
                             Delete
