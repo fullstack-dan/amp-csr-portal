@@ -1,9 +1,12 @@
 import { useState } from "react";
+import { useAlert, Alert } from "../context/AlertContext";
 
 /**
  * Allows CSRS to modify subscription details
  */
 export default function ModifySubscriptionModal({ subscription, onClose }) {
+    const { alert, showAlert, handleClose } = useAlert();
+
     const [planType, setPlanType] = useState(subscription.planType);
     const [maxVehicles, setMaxVehicles] = useState(
         subscription.planFeatures.maxVehicles
@@ -21,6 +24,11 @@ export default function ModifySubscriptionModal({ subscription, onClose }) {
 
     const handleSave = (event) => {
         event.preventDefault();
+
+        if (!planType || !maxVehicles || !maxWashes || !billingAmount) {
+            showAlert("Please fill in all required fields", "error");
+            return;
+        }
 
         const updated = {
             ...subscription,
@@ -151,6 +159,7 @@ export default function ModifySubscriptionModal({ subscription, onClose }) {
                         </button>
                     </form>
                 </div>
+                <Alert alert={alert} onClose={handleClose} inModal />
             </div>
         </dialog>
     );

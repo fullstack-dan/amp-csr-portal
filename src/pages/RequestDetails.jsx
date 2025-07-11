@@ -14,6 +14,7 @@ import {
     InfoRow,
 } from "../components/DetailsViewLayout";
 import { formatPhoneNumber } from "../utils/formatting";
+import { useAlert } from "../context/AlertContext";
 
 /**
  * RequestDetails component displays detailed information about a CSR request.
@@ -24,10 +25,11 @@ export default function RequestDetails() {
     const [request, setRequest] = useState(null);
     const [customer, setCustomer] = useState(null);
     const [loading, setLoading] = useState(true);
+    const { showAlert } = useAlert();
 
     useEffect(() => {
         if (!requestId) {
-            console.error("No request ID provided");
+            showAlert("No request ID provided", "error");
             return;
         }
         setLoading(true);
@@ -41,7 +43,8 @@ export default function RequestDetails() {
             setRequest(data);
             setCustomer(customerData);
         } catch (error) {
-            console.error("Failed to fetch request:", error);
+            showAlert("That request could not be found", "error");
+            console.error("Error fetching request:", error);
         } finally {
             setLoading(false);
         }
@@ -58,6 +61,7 @@ export default function RequestDetails() {
                 newRequest.customerId
             );
             setCustomer(customerData);
+            showAlert("Request updated successfully", "success");
         }
         setLoading(false);
     };

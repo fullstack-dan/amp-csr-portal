@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useAlert, Alert } from "../context/AlertContext";
 
 /**
  * Allows CSR agents to take actions on requests
@@ -6,6 +7,7 @@ import { useState } from "react";
 export default function CSRRequestActionModal({ request, onClose }) {
     const [actionTaken, setActionTaken] = useState("");
     const [status, setStatus] = useState(request ? request.status : "pending");
+    const { alert, showAlert, handleClose } = useAlert();
 
     const getStatusColor = (status) => {
         switch (status) {
@@ -24,6 +26,10 @@ export default function CSRRequestActionModal({ request, onClose }) {
 
     const handleSubmit = (event) => {
         event.preventDefault();
+        if (!actionTaken.trim()) {
+            showAlert("Action taken cannot be empty", "error");
+            return;
+        }
 
         const CSRRequestHistoryEntry = {
             timestamp: new Date().toISOString(),
@@ -96,6 +102,7 @@ export default function CSRRequestActionModal({ request, onClose }) {
                         </button>
                     </form>
                 </div>
+                <Alert alert={alert} onClose={handleClose} inModal />
             </div>
         </dialog>
     );

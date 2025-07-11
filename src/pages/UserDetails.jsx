@@ -4,6 +4,7 @@ import { supabaseAPI as API } from "../api/supabaseAPI";
 import VehicleSubscriptionsList from "../components/VehicleSubscriptionsList";
 import AddNewSubscriptionModal from "../components/AddNewSubscriptionModal";
 import PurchaseHistory from "../components/PurchaseHistory";
+import { useAlert } from "../context/AlertContext";
 import {
     Mail,
     Phone,
@@ -100,10 +101,9 @@ export default function UserDetails() {
     const [editing, setEditing] = useState(false);
     const [formData, setFormData] = useState({});
     const [hasChanges, setHasChanges] = useState(false);
-    const [info, setInfo] = useState("");
-    const [infoColor, setInfoColor] = useState("bg-blue-500");
     const [activeTab, setActiveTab] = useState("overview");
     const [purchaseHistory, setPurchaseHistory] = useState([]);
+    const { showAlert } = useAlert();
 
     useEffect(() => {
         if (!id) {
@@ -162,12 +162,7 @@ export default function UserDetails() {
     const handleSave = async () => {
         try {
             if (!validateFormData()) {
-                setInfo("Please fill in all fields correctly.");
-                setInfoColor("bg-red-500");
-                setTimeout(() => {
-                    setInfo("Editing customer information");
-                    setInfoColor("bg-blue-500");
-                }, 3000);
+                showAlert("Please fill in all fields correctly.", "error");
                 return;
             }
 
@@ -189,12 +184,7 @@ export default function UserDetails() {
             );
 
             if (!updatedCustomer) {
-                setInfo("Failed to save changes. Please try again.");
-                setInfoColor("bg-red-500");
-                setTimeout(() => {
-                    setInfo("Editing customer information");
-                    setInfoColor("bg-blue-500");
-                }, 3000);
+                showAlert("Failed to save changes. Please try again.", "error");
                 return;
             }
 
@@ -213,43 +203,44 @@ export default function UserDetails() {
             };
 
             setCustomer(updatedCustomerObj);
-            setInfo("Changes saved successfully.");
-            setInfoColor("bg-green-500");
+            showAlert("Changes saved successfully.", "success");
             setEditing(false);
             setHasChanges(false);
         } catch (error) {
-            console.error("Failed to save changes:", error);
+            showAlert("Failed to save changes. Please try again.", "error");
+            console.error("Error saving customer details:", error);
         }
     };
 
     const handleAddSubscription = (newSubscription) => {
+        //TODO: add api functionality
         if (!newSubscription) {
             return;
         }
         setSubscriptions((prev) => [...prev, newSubscription]);
-        setInfo("New subscription added successfully.");
-        setInfoColor("bg-green-500");
-        setTimeout(() => {
-            setInfo("Editing customer information");
-            setInfoColor("bg-blue-500");
-        }, 3000);
+        showAlert("New subscription added successfully.", "success");
     };
 
     const handleRemoveSubscription = async (subscriptionId) => {
         try {
             const { success } = await API.deleteSubscription(subscriptionId);
-            if (!success) throw new Error("Failed to delete subscription"); //TODO: add better error handling
+            if (!success) {
+                showAlert(
+                    "Failed to remove subscription. Please try again.",
+                    "error"
+                );
+                return;
+            }
             setSubscriptions((prev) =>
                 prev.filter((sub) => sub.id !== subscriptionId)
             );
-            setInfo("Subscription removed successfully.");
-            setInfoColor("bg-green-500");
-            setTimeout(() => {
-                setInfo("Editing customer information");
-                setInfoColor("bg-blue-500");
-            }, 3000);
+            showAlert("Subscription removed successfully.", "success");
         } catch (error) {
-            console.error("Failed to remove subscription:", error);
+            showAlert(
+                "Failed to remove subscription. Please try again.",
+                "error"
+            );
+            console.error("Error removing subscription:", error);
         }
     };
 
@@ -312,7 +303,11 @@ export default function UserDetails() {
             backLink="/users"
         >
             {editing && (
-                <EditModeBanner message={info} icon={Edit2} color={infoColor} />
+                <EditModeBanner
+                    message={"Editing customer information"}
+                    icon={Edit2}
+                    color={"bg-blue-500"}
+                />
             )}
 
             <DetailsHeader>
@@ -361,8 +356,6 @@ export default function UserDetails() {
                                 <button
                                     className="btn btn-primary bg-blue-600 btn-sm flex items-center gap-2"
                                     onClick={() => {
-                                        setInfo("Editing customer information");
-                                        setInfoColor("bg-blue-500");
                                         setEditing(true);
                                     }}
                                 >

@@ -31,6 +31,7 @@ import {
 } from "../components/DetailsViewLayout";
 import ModifySubscriptionModal from "../components/ModifySubscriptionModal";
 import TransferSubscriptionModal from "../components/TransferSubscriptionModal";
+import { useAlert } from "../context/AlertContext";
 
 const VehicleCard = ({ vehicle, onDelete }) => {
     const [isDeleting, setIsDeleting] = useState(false);
@@ -112,11 +113,11 @@ export default function SubscriptionDetails() {
     const [loading, setLoading] = useState(true);
     const [activeTab, setActiveTab] = useState("overview");
     const [addingVehicle, setAddingVehicle] = useState(false);
-    const [editing, setEditing] = useState(false);
+    const { showAlert } = useAlert();
 
     useEffect(() => {
         if (!subscriptionId) {
-            console.error("No subscription ID provided");
+            showAlert("No subscription ID provided", "error");
             return;
         }
         setLoading(true);
@@ -133,6 +134,7 @@ export default function SubscriptionDetails() {
                 setCustomer(customerData);
             }
         } catch (error) {
+            showAlert("Error fetching subscription", "error");
             console.error("Error fetching subscription:", error);
         } finally {
             setLoading(false);
@@ -146,9 +148,15 @@ export default function SubscriptionDetails() {
                 vehicleData
             );
             setSubscription(updatedSubscription);
+            showAlert("Vehicle added successfully", "success");
             setAddingVehicle(false);
         } catch (error) {
-            console.error("Error adding vehicle:", error); //TODO: add error handling
+            showAlert(
+                "Error adding vehicle to subscription: " + error.message,
+                "error"
+            );
+            setAddingVehicle(false);
+            console.error("Error adding vehicle:", error);
         }
     };
 
@@ -169,12 +177,9 @@ export default function SubscriptionDetails() {
                 );
                 setCustomer(customerData);
             }
+            showAlert("Subscription updated successfully", "success");
         }
         setLoading(false);
-    };
-
-    const handleModifySubscription = () => {
-        document.getElementById("modifysub_modal").showModal();
     };
 
     const handleDelete = async (vehicleId) => {
@@ -184,8 +189,10 @@ export default function SubscriptionDetails() {
                 subscriptionId
             );
             setSubscription(updatedSubscription);
+            showAlert("Vehicle deleted successfully", "success");
         } catch (error) {
-            console.error("Error deleting vehicle:", error); //TODO: add error handling
+            showAlert("Error deleting vehicle. Please try again", "error");
+            console.error("Error deleting vehicle:", error);
         }
     };
 

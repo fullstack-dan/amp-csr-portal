@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { supabaseAPI as API } from "../api/supabaseAPI";
-import { AlertCircle, Check } from "lucide-react";
+import { Check } from "lucide-react";
+import { useAlert, Alert } from "../context/AlertContext";
 
 /**
  * Allows CSRs to add a new subscription for a given customer
@@ -40,8 +41,9 @@ export default function AddNewSubscriptionModal({ customerId, onClose }) {
 
     // State
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState("");
     const [loadingLocations, setLoadingLocations] = useState(true);
+
+    const { alert, showAlert, handleClose } = useAlert();
 
     // Preset plan configurations
     const planPresets = {
@@ -121,13 +123,8 @@ export default function AddNewSubscriptionModal({ customerId, onClose }) {
     };
 
     const validateForm = () => {
-        if (!customerId) {
-            setError("Customer ID is required");
-            return false;
-        }
-
         if (selectedLocations.length === 0) {
-            setError("Please select at least one location");
+            showAlert("Please select at least one location", "error");
             return false;
         }
 
@@ -136,12 +133,12 @@ export default function AddNewSubscriptionModal({ customerId, onClose }) {
             paymentType === "card" &&
             (!cardBrand || !cardLast4 || cardLast4.length !== 4)
         ) {
-            setError("Please enter valid card details");
+            showAlert("Please enter valid card details", "error");
             return false;
         }
 
         if (paymentType === "paypal" && !paypalEmail) {
-            setError("Please enter PayPal email");
+            showAlert("Please enter valid PayPal email", "error");
             return false;
         }
 
@@ -149,7 +146,7 @@ export default function AddNewSubscriptionModal({ customerId, onClose }) {
             paymentType === "bank_transfer" &&
             (!bankLast4 || bankLast4.length !== 4)
         ) {
-            setError("Please enter valid bank account details");
+            showAlert("Please enter valid bank account details", "error");
             return false;
         }
 
@@ -158,15 +155,18 @@ export default function AddNewSubscriptionModal({ customerId, onClose }) {
                 discountType === "percentage" &&
                 (discountPercentage <= 0 || discountPercentage > 100)
             ) {
-                setError("Discount percentage must be between 1 and 100");
+                showAlert(
+                    "Discount percentage must be between 1 and 100",
+                    "error"
+                );
                 return false;
             }
             if (discountType === "amount" && discountAmount <= 0) {
-                setError("Discount amount must be greater than 0");
+                showAlert("Discount amount must be greater than 0", "error");
                 return false;
             }
             if (!discountReason) {
-                setError("Please provide a reason for the discount");
+                showAlert("Please provide a reason for the discount", "error");
                 return false;
             }
         }
@@ -240,7 +240,10 @@ export default function AddNewSubscriptionModal({ customerId, onClose }) {
             document.getElementById("addnewsub_modal")?.close();
         } catch (error) {
             console.error("Failed to create subscription:", error);
-            setError(error.message || "Failed to create subscription");
+            showAlert(
+                error.message || "Failed to create subscription",
+                "error"
+            );
         } finally {
             setLoading(false);
         }
@@ -256,16 +259,9 @@ export default function AddNewSubscriptionModal({ customerId, onClose }) {
     };
 
     return (
-        <dialog id="addnewsub_modal" className="modal ">
+        <dialog id="addnewsub_modal" className="modal">
             <div className="bg-gray-200 modal-box max-w-4xl max-h-[90vh] overflow-y-auto">
                 <h3 className="font-bold text-xl mb-4">Add New Subscription</h3>
-
-                {error && (
-                    <div className="alert alert-error mb-4">
-                        <AlertCircle className="w-4 h-4" />
-                        <span>{error}</span>
-                    </div>
-                )}
 
                 {/* Plan selection */}
                 <div className="card bg-white p-4 mb-4 border border-gray-50 shadow-md">
@@ -670,6 +666,7 @@ export default function AddNewSubscriptionModal({ customerId, onClose }) {
                         Cancel
                     </button>
                 </div>
+                <Alert alert={alert} onClose={handleClose} inModal />
             </div>
         </dialog>
     );

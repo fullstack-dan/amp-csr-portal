@@ -1,4 +1,3 @@
-// DashboardHome.jsx
 import { useEffect, useState } from "react";
 import { supabaseAPI as API } from "../api/supabaseAPI";
 import { CSRRequestStatus, CSRRequestType } from "../models/CSRRequest";
@@ -8,7 +7,6 @@ import RequestsList from "../components/RequestsList";
 export default function DashboardHome() {
     const [pendingRequests, setPendingRequests] = useState([]);
     const [users, setUsers] = useState([]);
-    const [error, setError] = useState(null);
     const [reqsLoading, setReqsLoading] = useState(true);
     const [usersLoading, setUsersLoading] = useState(true);
 

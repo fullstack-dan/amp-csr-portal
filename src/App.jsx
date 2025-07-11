@@ -1,4 +1,3 @@
-import { useState } from "react";
 import Navbar from "./components/Navbar";
 import {
     DashboardHome,
@@ -10,6 +9,7 @@ import {
 } from "./pages";
 import { Route, Routes, Link } from "react-router";
 import { User } from "lucide-react";
+import { AlertProvider } from "./context/AlertContext";
 import "./App.css";
 
 import ampLogo from "./assets/amp-logo.png";
@@ -29,28 +29,33 @@ function App() {
                     <span className="hidden md:block">Hello, User</span>
                 </Link>
             </div>
-            <div className="flex flex-1 flex-col-reverse md:flex-row overflow-hidden">
-                <Navbar />
-                <div className="flex-1 overflow-y-auto">
-                    <Routes>
-                        <Route path="/" element={<DashboardHome />} />
-                        <Route path="/users" element={<DashboardUsers />} />
-                        <Route path="/users/:id" element={<UserDetails />} />
-                        <Route
-                            path="/requests"
-                            element={<DashboardRequests />}
-                        />
-                        <Route
-                            path="/requests/:requestId"
-                            element={<RequestDetails />}
-                        />
-                        <Route
-                            path="/subscriptions/:subscriptionId"
-                            element={<SubscriptionDetails />}
-                        />
-                    </Routes>
+            <AlertProvider>
+                <div className="flex flex-1 flex-col-reverse md:flex-row overflow-hidden">
+                    <Navbar />
+                    <div className="flex-1 overflow-y-auto">
+                        <Routes>
+                            <Route path="/" element={<DashboardHome />} />
+                            <Route path="/users" element={<DashboardUsers />} />
+                            <Route
+                                path="/users/:id"
+                                element={<UserDetails />}
+                            />
+                            <Route
+                                path="/requests"
+                                element={<DashboardRequests />}
+                            />
+                            <Route
+                                path="/requests/:requestId"
+                                element={<RequestDetails />}
+                            />
+                            <Route
+                                path="/subscriptions/:subscriptionId"
+                                element={<SubscriptionDetails />}
+                            />
+                        </Routes>
+                    </div>
                 </div>
-            </div>
+            </AlertProvider>
         </main>
     );
 }
