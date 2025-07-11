@@ -786,41 +786,11 @@ export const supabaseAPI = {
     },
 
     // Create a new subscription
-    async createSubscription(subscriptionData: {
-        customerId: string;
-        planType: SubscriptionPlanType;
-        planFeatures: {
-            maxVehicles: number;
-            maxWashesPerMonth: number;
-            detailingIncluded: boolean;
-        };
-        status: SubscriptionStatus;
-        startDate: string;
-        selectedLocationIds: string[];
-        billingInfo: {
-            amount: number;
-            currency: string;
-            frequency: BillingFrequency;
-            nextBillingDate: string;
-            paymentMethod: {
-                type: PaymentType;
-                details: {
-                    cardBrand?: string;
-                    cardLast4?: string;
-                    paypalEmail?: string;
-                    bankAccountLast4?: string;
-                };
-            };
-            discount?: {
-                percentage?: number;
-                amount?: number;
-                reason: string;
-                validUntil?: string;
-            };
-        };
-    }): Promise<VehicleSubscription> {
+    async createSubscription(
+        subscriptionData: CreateSubscriptionData
+    ): Promise<VehicleSubscription> {
         try {
-            // Start a transaction
+            // Start a transaction-like operation
             const subscriptionId = `sub-${Date.now()}-${Math.random()
                 .toString(36)
                 .substr(2, 9)}`;
@@ -927,12 +897,24 @@ export const supabaseAPI = {
                 const { error: locError } = await supabase
                     .from("subscription_locations")
                     .insert(locationInserts);
-
-                if (locError) throw locError;
+                
+                
+                if (locError) {
+                    console.log("here")
+                    throw locError
+                };
             }
 
             // 7. Fetch and return the complete subscription
-            return await this.getSubscriptionById(subscriptionId);
+            const newSubscription = await this.getSubscriptionById(
+                subscriptionId
+            );
+
+            if (!newSubscription) {
+                throw new Error("Failed to retrieve created subscription");
+            }
+
+            return newSubscription;
         } catch (error) {
             console.error("Error creating subscription:", error);
             throw new Error(`Failed to create subscription: ${error.message}`);

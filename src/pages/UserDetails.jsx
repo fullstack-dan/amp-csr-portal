@@ -212,11 +212,8 @@ export default function UserDetails() {
         }
     };
 
-    const handleAddSubscription = (newSubscription) => {
-        //TODO: add api functionality
-        if (!newSubscription) {
-            return;
-        }
+    const handleAddSubscription = async (newSubscription) => {
+        // Optimistically update the UI
         setSubscriptions((prev) => [...prev, newSubscription]);
         showAlert("New subscription added successfully.", "success");
     };

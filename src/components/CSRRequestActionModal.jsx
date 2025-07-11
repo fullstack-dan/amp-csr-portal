@@ -65,7 +65,7 @@ export default function CSRRequestActionModal({ request, onClose }) {
                     </h2>
                     <p>ID: {request.id}</p>
                 </div>
-                <div className="flex gap-12">
+                <div className=" flex flex-col md:flex-row gap-4">
                     <div>
                         <h3 className="py-4">Action taken:</h3>
                         <input
@@ -97,7 +97,7 @@ export default function CSRRequestActionModal({ request, onClose }) {
                         >
                             Submit
                         </button>
-                        <button className="btn" onClick={onClose}>
+                        <button className="btn" onClick={() => onClose()}>
                             Close
                         </button>
                     </form>

@@ -171,7 +171,6 @@ export default function AddNewSubscriptionModal({ customerId, onClose }) {
             }
         }
 
-        setError("");
         return true;
     };
 
@@ -183,7 +182,6 @@ export default function AddNewSubscriptionModal({ customerId, onClose }) {
         }
 
         setLoading(true);
-        setError("");
 
         try {
             const subscriptionData = {

@@ -24,8 +24,11 @@ export const Alert = ({ alert, onClose, inModal = false }) => {
                 ${statusClasses[alert.status] || statusClasses.info}
                 text-white rounded shadow-lg z-[9999] text-base flex items-center gap-3
                 cursor-pointer
+                transition-opacity duration-300 opacity-100
+                animate-fade-in
             `}
             onClick={onClose}
+            style={{ animation: "fade-in 0.1s" }}
         >
             <span>{alert.message}</span>
             <button
@@ -36,6 +39,14 @@ export const Alert = ({ alert, onClose, inModal = false }) => {
             >
                 &times;
             </button>
+            <style>
+                {`
+                    @keyframes fade-in {
+                        from { opacity: 0; }
+                        to { opacity: 1; }
+                    }
+                `}
+            </style>
         </div>
     );
 };
@@ -67,13 +78,6 @@ export const AlertProvider = ({ children }) => {
     const handleClose = () => {
         setAlert((prev) => ({ ...prev, open: false }));
         if (timeoutId) clearTimeout(timeoutId);
-    };
-
-    const statusClasses = {
-        success: "bg-green-700",
-        error: "bg-red-700",
-        warning: "bg-yellow-500",
-        info: "bg-blue-950",
     };
 
     return (
