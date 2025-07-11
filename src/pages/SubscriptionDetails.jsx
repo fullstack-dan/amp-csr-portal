@@ -17,6 +17,7 @@ import {
     Tag,
     Globe,
     User,
+    Trash2,
 } from "lucide-react";
 import {
     DetailsViewLayout,
@@ -29,6 +30,75 @@ import {
     InfoRow,
 } from "../components/DetailsViewLayout";
 import ModifySubscriptionModal from "../components/ModifySubscriptionModal";
+
+const VehicleCard = ({ vehicle, onDelete }) => {
+    const [isDeleting, setIsDeleting] = useState(false);
+
+    return (
+        <>
+            {isDeleting ? (
+                <div className="border rounded-lg p-4">
+                    <h2 className="text-lg text-center font-bold">
+                        Deleting Vehicle
+                    </h2>
+                    <p className="text-sm text-center text-gray-600">
+                        Are you sure you want to delete this {vehicle.year}{" "}
+                        {vehicle.make} {vehicle.model}? This action cannot be
+                        undone.
+                    </p>
+                    <div className="flex justify-center mt-4">
+                        <button
+                            className="btn bg-red-500 text-white px-4 py-2 rounded-md"
+                            onClick={() => onDelete(vehicle.id)}
+                        >
+                            Delete
+                        </button>
+                        <button
+                            className="btn bg-gray-300 text-gray-700 px-4 py-2 rounded-md ml-2"
+                            onClick={() => setIsDeleting(false)}
+                        >
+                            Cancel
+                        </button>
+                    </div>
+                </div>
+            ) : (
+                <div className="border rounded-lg p-4">
+                    <div className="flex justify-between items-start mb-2">
+                        <div>
+                            <h4 className="font-semibold">
+                                {vehicle.year} {vehicle.make} {vehicle.model}
+                            </h4>
+                            <p className="text-sm text-gray-600">
+                                {vehicle.color}
+                            </p>
+                        </div>
+                        <div className="flex gap-2">
+                            <Eye className="w-4 h-4 hover:text-blue-500 cursor-pointer" />
+                            <Trash2
+                                className="w-4 h-4 hover:text-red-500 cursor-pointer"
+                                onClick={() => setIsDeleting(true)}
+                            />
+                        </div>
+                    </div>
+                    <div className="space-y-1 text-sm">
+                        <p>
+                            <span className="text-gray-600">License:</span>{" "}
+                            {vehicle.licensePlate}
+                        </p>
+                        <p>
+                            <span className="text-gray-600">VIN:</span>{" "}
+                            {vehicle.vin}
+                        </p>
+                        <p>
+                            <span className="text-gray-600">Added:</span>{" "}
+                            {new Date(vehicle.addedAt).toLocaleDateString()}
+                        </p>
+                    </div>
+                </div>
+            )}
+        </>
+    );
+};
 
 /**
  * Detailed view component for subscription information,
@@ -105,6 +175,18 @@ export default function SubscriptionDetails() {
 
     const handleModifySubscription = () => {
         document.getElementById("modifysub_modal").showModal();
+    };
+
+    const handleDelete = async (vehicleId) => {
+        try {
+            await API.removeVehicleFromSubscription(subscriptionId, vehicleId);
+            const updatedSubscription = await API.getSubscriptionById(
+                subscriptionId
+            );
+            setSubscription(updatedSubscription);
+        } catch (error) {
+            console.error("Error deleting vehicle:", error); //TODO: add error handling
+        }
     };
 
     const getPaymentMethodDisplay = (paymentMethod) => {
@@ -320,47 +402,11 @@ export default function SubscriptionDetails() {
                     <DetailsCard title="Registered Vehicles" icon={Car}>
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                             {subscription?.vehicles.map((vehicle) => (
-                                <div
+                                <VehicleCard
                                     key={vehicle.id}
-                                    className="border rounded-lg p-4"
-                                >
-                                    <div className="flex justify-between items-start mb-2">
-                                        <div>
-                                            <h4 className="font-semibold">
-                                                {vehicle.year} {vehicle.make}{" "}
-                                                {vehicle.model}
-                                            </h4>
-                                            <p className="text-sm text-gray-600">
-                                                {vehicle.color}
-                                            </p>
-                                        </div>
-                                        <button className="btn btn-ghost btn-sm">
-                                            <Eye className="w-4 h-4" />
-                                        </button>
-                                    </div>
-                                    <div className="space-y-1 text-sm">
-                                        <p>
-                                            <span className="text-gray-600">
-                                                License:
-                                            </span>{" "}
-                                            {vehicle.licensePlate}
-                                        </p>
-                                        <p>
-                                            <span className="text-gray-600">
-                                                VIN:
-                                            </span>{" "}
-                                            {vehicle.vin}
-                                        </p>
-                                        <p>
-                                            <span className="text-gray-600">
-                                                Added:
-                                            </span>{" "}
-                                            {new Date(
-                                                vehicle.addedAt
-                                            ).toLocaleDateString()}
-                                        </p>
-                                    </div>
-                                </div>
+                                    vehicle={vehicle}
+                                    onDelete={handleDelete}
+                                />
                             ))}
                             {subscription?.vehicles.length <
                                 subscription?.planFeatures.maxVehicles && (
