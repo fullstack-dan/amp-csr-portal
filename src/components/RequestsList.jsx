@@ -1,6 +1,6 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo } from "react";
 import Fuse from "fuse.js";
-import { Link, useLocation } from "react-router";
+import { Link } from "react-router";
 import { Plus, Minus } from "lucide-react";
 
 export default function RequestsList({
